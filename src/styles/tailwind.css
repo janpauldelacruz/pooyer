@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0e13;
+  --foreground: #e6ebf2;
+  --primary: #22d3ee;
+  --primary-foreground: #04222a;
+  --secondary: #1a222d;
+  --secondary-foreground: #d5dde8;
+  --accent: #f5b942;
+  --accent-foreground: #231a04;
+  --muted: #141b24;
+  --muted-foreground: #8593a6;
+  --card: #10161e;
+  --card-foreground: #e6ebf2;
+  --border: #1f2a37;
+  --input: #1a2330;
+  --ring: #22d3ee;
+  --radius: 0.625rem;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --success: #22d3a5;
+  --success-foreground: #032a20;
+  --warning: #f5b942;
+  --warning-foreground: #231a04;
+  --destructive: #f2557a;
+  --destructive-foreground: #2c0510;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-foreground);
+  }
+}
+
+@layer utilities {
+  .num {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .label-xs {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+  .grid-bg {
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-position: -1px -1px;
+  }
+  .glow-long {
+    box-shadow: 0 0 0 1px rgba(34, 211, 165, 0.35), 0 0 32px -8px rgba(34, 211, 165, 0.35);
+  }
+  .glow-short {
+    box-shadow: 0 0 0 1px rgba(242, 85, 122, 0.35), 0 0 32px -8px rgba(242, 85, 122, 0.35);
+  }
+  .blob-primary {
+    background: radial-gradient(circle at center, rgba(34, 211, 238, 0.18), transparent 70%);
+    filter: blur(40px);
+  }
+  .flash-up {
+    animation: flashUp 700ms ease-out;
+  }
+  .flash-down {
+    animation: flashDown 700ms ease-out;
+  }
+  .slide-in {
+    animation: slideIn 300ms ease-out;
+  }
+  .modal-in {
+    animation: modalIn 180ms ease-out;
+  }
+  .live-dot {
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes flashUp {
+  0% { background-color: rgba(34, 211, 165, 0.28); }
+  100% { background-color: transparent; }
+}
+@keyframes flashDown {
+  0% { background-color: rgba(242, 85, 122, 0.28); }
+  100% { background-color: transparent; }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
