@@ -36,8 +36,16 @@ function Tip({ active, payload }: TipProps) {
 }
 
 export default function EquityChartClient({ data }: { data: EquityPoint[] }) {
+  const first = data[0];
+  const last = data[data.length - 1];
   return (
-    <div className="w-full">
+    <div
+      className="w-full"
+      role="img"
+      aria-label={`Equity curve and drawdown chart across ${data.length} points${
+        first && last ? `, equity from ${first.equity.toFixed(2)} to ${last.equity.toFixed(2)}` : ''
+      }.`}
+    >
       <ResponsiveContainer width="100%" height={250}>
         <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <defs>

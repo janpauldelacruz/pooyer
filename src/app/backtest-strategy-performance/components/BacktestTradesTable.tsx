@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowUp, ArrowDown, ChevronLeft, ChevronRight, Search, Download, SlidersHorizontal, History } from 'lucide-react';
 import { toast } from 'sonner';
 import Card from '@/components/ui/Card';
@@ -66,7 +66,11 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
     setHidden((h) => (h.includes(key) ? h.filter((x) => x !== key) : [...h, key]));
 
   const SortHead = ({ k, label, align = 'left' }: { k: SortKey; label: string; align?: 'left' | 'right' }) => (
-    <th scope="col" className={`px-3 py-2.5 ${align === 'right' ? 'text-right' : 'text-left'}`}>
+    <th
+      scope="col"
+      aria-sort={sortKey === k ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}
+      className={`px-3 py-2.5 ${align === 'right' ? 'text-right' : 'text-left'}`}
+    >
       <button
         type="button"
         onClick={() => toggleSort(k)}
@@ -75,10 +79,36 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
         }`}
       >
         {label}
-        {sortKey === k && (dir === 'asc' ? <ArrowUp size={11} /> : <ArrowDown size={11} />)}
+        {sortKey === k && (dir === 'asc' ? <ArrowUp size={11} aria-hidden="true" /> : <ArrowDown size={11} aria-hidden="true" />)}
       </button>
     </th>
   );
+
+  const exportCsv = () => {
+    const header = ['id', 'date', 'time', 'side', 'module', 'session', 'entry', 'exit', 'confidence', 'hold_min', 'r_result'];
+    const lines = filtered.map((t) =>
+      [t.id, t.date, t.time, t.side, MODULE_SHORT[t.module], t.session, t.entry, t.exit, t.confidence, t.holdMin, t.rResult]
+        .map((v) => `"${String(v).replace(/"/g, '""')}"`)
+        .join(',')
+    );
+    const blob = new Blob([[header.join(','), ...lines].join('\n')], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'backtest-btcusd-1m.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('Trade log exported', { description: `${filtered.length} rows · backtest-btcusd-1m.csv` });
+  };
+
+  useEffect(() => {
+    if (!colMenu) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setColMenu(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [colMenu]);
 
   const pageNumbers = Array.from({ length: pageCount }, (_, i) => i + 1).filter(
     (p) => p === 1 || p === pageCount || Math.abs(p - safePage) <= 1
@@ -95,9 +125,10 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
               type="button"
               onClick={() => setColMenu((v) => !v)}
               aria-expanded={colMenu}
+              aria-haspopup="true"
               className="flex items-center gap-1.5 rounded-md border border-border bg-secondary px-2.5 py-1.5 text-xs font-semibold text-secondary-foreground transition-all duration-150 hover:bg-muted active:scale-95"
             >
-              <SlidersHorizontal size={13} /> Columns
+              <SlidersHorizontal size={13} aria-hidden="true" /> Columns
             </button>
             {colMenu && (
               <div className="slide-in absolute right-0 top-full z-20 mt-1.5 w-44 rounded-lg border border-border bg-card p-2 shadow-xl">
@@ -118,10 +149,10 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
           </div>
           <button
             type="button"
-            onClick={() => toast.success('Trade log exported', { description: `${filtered.length} rows · backtest-btcusd-1m.csv` })}
+            onClick={exportCsv}
             className="flex items-center gap-1.5 rounded-md bg-primary px-2.5 py-1.5 text-xs font-semibold text-primary-foreground transition-all duration-150 hover:opacity-90 active:scale-95"
           >
-            <Download size={13} /> Export CSV
+            <Download size={13} aria-hidden="true" /> Export CSV
           </button>
         </div>
       }
@@ -130,7 +161,7 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
       <div className="flex flex-col gap-2 border-b border-border p-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="relative w-full lg:w-64">
           <label htmlFor="bt-search" className="sr-only">Search trades</label>
-          <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <input
             id="bt-search"
             type="text"
@@ -148,6 +179,7 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
             <button
               key={`side-${s}`}
               type="button"
+              aria-pressed={side === s}
               onClick={() => {
                 setSide(s);
                 setPage(1);
@@ -159,11 +191,12 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
               {s === 'all' ? 'All sides' : s}
             </button>
           ))}
-          <span className="mx-1 hidden h-4 w-px bg-border sm:block" />
+          <span className="mx-1 hidden h-4 w-px bg-border sm:block" aria-hidden="true" />
           {(['all', 'win', 'loss'] as const).map((r) => (
             <button
               key={`res-${r}`}
               type="button"
+              aria-pressed={result === r}
               onClick={() => {
                 setResult(r);
                 setPage(1);
@@ -180,6 +213,7 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[900px] text-sm">
+          <caption className="sr-only">Replayed backtest trades with entry, exit, confidence, hold time and result</caption>
           <thead className="border-b border-border bg-muted/50">
             <tr>
               <th scope="col" className="label-xs px-3 py-2.5 text-left">Trade ID</th>
@@ -234,7 +268,7 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
         </table>
         {rows.length === 0 && (
           <EmptyState
-            icon={<History size={20} />}
+            icon={<History size={20} aria-hidden="true" />}
             title="No backtest trades match"
             description="No replayed trades fit this module, side and result combination. Loosen a filter to see the trade log."
             actionLabel="Reset filters"
@@ -269,7 +303,7 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
             <span className="num font-semibold text-foreground">{filtered.length}</span>
           </span>
         </div>
-        <div className="flex items-center gap-1">
+          <nav aria-label="Trade log pagination" className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setPage(Math.max(1, safePage - 1))}
@@ -277,7 +311,7 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
             aria-label="Previous page"
             className="rounded-md border border-border bg-secondary p-1.5 text-secondary-foreground transition-all duration-150 hover:bg-muted active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <ChevronLeft size={14} />
+            <ChevronLeft size={14} aria-hidden="true" />
           </button>
           {pageNumbers.map((p, idx) => (
             <React.Fragment key={`pg-${p}`}>
@@ -301,9 +335,9 @@ export default function BacktestTradesTable({ moduleFilter, trades }: { moduleFi
             aria-label="Next page"
             className="rounded-md border border-border bg-secondary p-1.5 text-secondary-foreground transition-all duration-150 hover:bg-muted active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <ChevronRight size={14} />
+            <ChevronRight size={14} aria-hidden="true" />
           </button>
-        </div>
+        </nav>
       </div>
     </Card>
   );

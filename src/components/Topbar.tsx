@@ -26,14 +26,14 @@ export default function Topbar({ onOpenMobile, title, soundOn = true, price = nu
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 flex h-12 items-center gap-2.5 border-b border-border bg-background/80 px-3 backdrop-blur-md md:px-4">
+    <header className="sticky top-0 z-30 flex h-12 items-center gap-2.5 border-b border-border bg-background/70 px-3 backdrop-blur-xl md:px-4">
       <button
         type="button"
         onClick={onOpenMobile}
         aria-label="Open navigation"
         className="rounded-md p-1.5 text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground active:scale-95 lg:hidden"
       >
-        <Menu size={18} />
+        <Menu size={18} aria-hidden="true" />
       </button>
 
       <div className="flex min-w-0 items-baseline gap-2.5">
@@ -46,7 +46,7 @@ export default function Topbar({ onOpenMobile, title, soundOn = true, price = nu
       <div className="ml-auto flex items-center gap-2">
         <div className="relative hidden w-52 md:block">
           <label htmlFor="global-search" className="sr-only">Search signals</label>
-          <Search size={13} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search size={13} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <input
             id="global-search"
             type="search"
@@ -57,7 +57,7 @@ export default function Topbar({ onOpenMobile, title, soundOn = true, price = nu
 
         <div className="hidden items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1 sm:flex">
           <span className="live-dot h-1.5 w-1.5 rounded-full bg-success" aria-hidden="true" />
-          <span className="num text-[11px] font-medium text-foreground">{clock || '--:--:-- UTC'}</span>
+          <span className="num text-[11px] font-medium text-foreground" role="timer" aria-label="Current UTC time">{clock || '--:--:-- UTC'}</span>
         </div>
 
         <span
@@ -67,7 +67,7 @@ export default function Topbar({ onOpenMobile, title, soundOn = true, price = nu
           }`}
           aria-label={soundOn ? 'Sound alerts on' : 'Sound alerts muted'}
         >
-          {soundOn ? <Volume2 size={14} /> : <VolumeX size={14} />}
+          {soundOn ? <Volume2 size={14} aria-hidden="true" /> : <VolumeX size={14} aria-hidden="true" />}
         </span>
       </div>
     </header>

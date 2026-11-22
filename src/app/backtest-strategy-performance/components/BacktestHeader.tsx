@@ -51,7 +51,7 @@ export default function BacktestHeader({ range, onRange, moduleFilter, onModule,
             <Badge tone="neutral">No results</Badge>
           )}
         </div>
-        <p className="mt-0.5 text-[11px] text-muted-foreground">
+        <p className="mt-0.5 text-[11px] text-muted-foreground" aria-live="polite">
           {result ? (
             <>
               <span className="num">{result.kpis.totalTrades}</span> trades on <span className="num">{result.bars.toLocaleString('en-US')}</span> real Binance 1m candles ·{' '}

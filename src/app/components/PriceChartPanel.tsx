@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Card from '@/components/ui/Card';
 import type { LiveAnalysis } from '@/lib/liveAnalysis';
+import { CandleThemeId, getCandleTheme } from '@/lib/settings';
 
 const PriceChartClient = dynamic(() => import('./PriceChartClient'), {
   ssr: false,
@@ -16,14 +17,15 @@ const TOGGLES = [
   { id: 'tg-bb', key: 'bands', label: 'Bollinger 20,2', swatch: 'bg-muted-foreground' },
 ] as const;
 
-export default function PriceChartPanel({ analysis }: { analysis: LiveAnalysis | null }) {
+export default function PriceChartPanel({ analysis, candleTheme = 'neon' }: { analysis: LiveAnalysis | null; candleTheme?: CandleThemeId }) {
   const [on, setOn] = useState({ ema: true, vwap: true, bands: true });
+  const theme = getCandleTheme(candleTheme);
   const data = analysis?.chartCandles ?? [];
   const last = analysis?.candles?.[analysis.candles.length - 1];
 
   return (
     <Card
-      title="BTCUSD · 1m price action"
+      title="BTCUSD · 1m candlesticks"
       subtitle="Last 60 live candles · ▲ long ▼ short markers · active levels overlaid"
       action={
         <div className="flex flex-wrap items-center justify-end gap-1.5">
@@ -55,13 +57,14 @@ export default function PriceChartPanel({ analysis }: { analysis: LiveAnalysis |
           Waiting for live BTCUSD candles…
         </div>
       ) : (
-        <PriceChartClient data={data} showBands={on.bands} showEma={on.ema} showVwap={on.vwap} active={analysis?.active ?? null} />
+        <PriceChartClient data={data} showBands={on.bands} showEma={on.ema} showVwap={on.vwap} active={analysis?.active ?? null} candleTheme={candleTheme} />
       )}
       <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-1.5 text-[11px] text-muted-foreground">
-        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-success" aria-hidden="true" /> EMA 9</span>
-        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-accent" aria-hidden="true" /> EMA 21</span>
-        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-destructive" aria-hidden="true" /> EMA 50</span>
-        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-foreground" aria-hidden="true" /> VWAP</span>
+        <span className="sr-only">Chart legend:</span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2 rounded-[2px]" style={{ background: theme.up }} aria-hidden="true" /> Up candle
+          <span className="ml-1 h-2.5 w-2 rounded-[2px]" style={{ background: theme.down }} aria-hidden="true" /> Down candle
+        </span>
         {last && (
           <span className="num ml-auto">
             RSI {last.rsi.toFixed(1)} · MACD hist {last.macdHist >= 0 ? '+' : ''}{last.macdHist.toFixed(2)}

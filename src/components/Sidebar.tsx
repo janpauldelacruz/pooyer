@@ -1,11 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Activity, BarChart3, ChevronsLeft, ChevronsRight, X } from 'lucide-react';
+import { Activity, BarChart3, ChevronsLeft, ChevronsRight, Settings, X } from 'lucide-react';
 import AppLogo from '@/components/ui/AppLogo';
 import Tooltip from '@/components/ui/Tooltip';
+import { getDataSource, useSettings } from '@/lib/settings';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -18,6 +19,7 @@ interface SidebarProps {
 const PRIMARY_NAV = [
   { id: 'nav-live', href: '/', label: 'Live Signals', icon: Activity },
   { id: 'nav-backtest', href: '/backtest-strategy-performance', label: 'Backtest & Performance', icon: BarChart3 },
+  { id: 'nav-settings', href: '/settings', label: 'Settings', icon: Settings },
 ];
 
 const STATUS_LABEL = {
@@ -30,6 +32,17 @@ const STATUS_LABEL = {
 
 export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile, status = 'connecting' }: SidebarProps) {
   const pathname = usePathname();
+  const { settings } = useSettings();
+  const dataSource = getDataSource(settings.dataSource);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCloseMobile();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileOpen, onCloseMobile]);
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/' || pathname === '/live-signal-dashboard';
@@ -45,7 +58,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
             <AppLogo size={26} />
             {showLabels && (
               <span className="text-[15px] font-extrabold tracking-tight text-foreground">
-                Scalp<span className="text-gradient">Signal</span>
+                Scalp<span className="text-gradient font-semibold">Signal</span>
               </span>
             )}
           </div>
@@ -56,13 +69,13 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
               aria-label="Close navigation"
               className="rounded-md p-1.5 text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground active:scale-95"
             >
-              <X size={16} />
+              <X size={16} aria-hidden="true" />
             </button>
           )}
         </div>
 
         {showLabels && (
-          <div className="border-gradient mx-2.5 mt-2.5 rounded-lg bg-muted px-2.5 py-2">
+          <div className="border-gradient mx-2.5 mt-3 rounded-lg bg-muted/80 px-3 py-2.5">
             <p className="label-xs">Instrument</p>
             <div className="mt-0.5 flex items-center justify-between">
               <span className="num text-[13px] font-semibold text-foreground">BTCUSD · 1m</span>
@@ -83,7 +96,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
           </div>
         )}
 
-        <nav aria-label="Primary" className="mt-3 flex-1 overflow-y-auto px-2.5">
+        <nav aria-label={isMobile ? 'Primary mobile' : 'Primary'} className="mt-3 flex-1 overflow-y-auto px-2.5">
           {showLabels && <p className="label-xs mb-1.5 px-2">Terminal</p>}
           <ul className="space-y-0.5">
             {PRIMARY_NAV.map((item) => {
@@ -97,7 +110,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
                   aria-label={showLabels ? undefined : item.label}
                   className={`group flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-all duration-150 ${
                     active
-                      ? 'bg-primary/15 text-primary shadow-[inset_2px_0_0_var(--primary)]'
+                      ? 'bg-primary/10 text-primary shadow-[inset_2px_0_0_var(--primary)]'
                       : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
                   } ${showLabels ? '' : 'justify-center'}`}
                 >
@@ -114,7 +127,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
           {showLabels ? (
             <div className="rounded-lg bg-muted p-2">
               <p className="text-xs font-semibold text-foreground">Data source</p>
-              <p className="truncate text-[11px] text-muted-foreground">Binance BTCUSDT · live 1m stream</p>
+              <p className="truncate text-[11px] text-muted-foreground">{dataSource.host} · live 1m stream</p>
             </div>
           ) : null}
           {!isMobile && (
@@ -122,9 +135,10 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
               type="button"
               onClick={onToggle}
               aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              aria-expanded={!collapsed}
               className="mt-1.5 hidden w-full items-center justify-center gap-2 rounded-lg py-1.5 text-xs font-medium text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground active:scale-95 lg:flex"
             >
-              {collapsed ? <ChevronsRight size={15} /> : (<><ChevronsLeft size={15} /> Collapse</>)}
+              {collapsed ? <ChevronsRight size={15} aria-hidden="true" /> : (<><ChevronsLeft size={15} aria-hidden="true" /> Collapse</>)}
             </button>
           )}
         </div>
@@ -135,7 +149,8 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
   return (
     <>
       <aside
-        className={`fixed inset-y-0 left-0 z-40 hidden border-r border-border bg-card/90 backdrop-blur transition-all duration-300 ease-in-out lg:block ${
+        aria-label="Sidebar"
+        className={`fixed inset-y-0 left-0 z-40 hidden border-r border-border bg-card/80 backdrop-blur-xl transition-all duration-300 ease-in-out lg:block ${
           collapsed ? 'w-14' : 'w-52'
         }`}
       >
@@ -151,7 +166,9 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
           aria-hidden="true"
         />
         <aside
+          aria-label="Mobile navigation"
           aria-hidden={!mobileOpen}
+          style={{ visibility: mobileOpen ? 'visible' : 'hidden' }}
           className={`absolute inset-y-0 left-0 w-60 border-r border-border bg-card transition-transform duration-300 ease-in-out ${
             mobileOpen ? 'translate-x-0' : '-translate-x-full'
           }`}

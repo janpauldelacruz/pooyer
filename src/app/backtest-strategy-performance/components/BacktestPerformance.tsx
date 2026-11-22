@@ -17,6 +17,7 @@ import ParameterPanel from './ParameterPanel';
 import BacktestTradesTable from './BacktestTradesTable';
 import { BacktestParams, RawKline } from '@/lib/types';
 import { fetchHistoricalKlines } from '@/lib/useLiveMarket';
+import { useSettings } from '@/lib/settings';
 import { BacktestResult, DEFAULT_PARAMS, runBacktest } from '@/lib/backtestEngine';
 
 const RANGE_BARS: Record<string, number> = {
@@ -27,13 +28,16 @@ const RANGE_BARS: Record<string, number> = {
 };
 
 export default function BacktestPerformance() {
+  const { settings, ready } = useSettings();
+  const sourceRef = useRef(settings.dataSource);
+  sourceRef.current = settings.dataSource;
   const [running, setRunning] = useState(false);
   const [range, setRange] = useState('3d');
   const [moduleFilter, setModuleFilter] = useState('all');
   const [result, setResult] = useState<BacktestResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [lastParams, setLastParams] = useState<BacktestParams>(DEFAULT_PARAMS);
-  const cache = useRef<{ bars: number; klines: RawKline[] } | null>(null);
+  const cache = useRef<{ bars: number; klines: RawKline[]; source: string } | null>(null);
   const started = useRef(false);
 
   const execute = useCallback(async (params: BacktestParams, rangeKey: string, notify: boolean) => {
@@ -42,11 +46,11 @@ export default function BacktestPerformance() {
     try {
       const bars = RANGE_BARS[rangeKey] ?? 4320;
       let klines: RawKline[];
-      if (cache.current && cache.current.bars >= bars && notify === false) {
+      if (cache.current && cache.current.bars >= bars && cache.current.source === sourceRef.current && notify === false) {
         klines = cache.current.klines.slice(-bars);
       } else {
-        klines = await fetchHistoricalKlines(bars);
-        cache.current = { bars, klines };
+        klines = await fetchHistoricalKlines(bars, undefined, sourceRef.current);
+        cache.current = { bars, klines, source: sourceRef.current };
       }
       // allow the UI to paint the running state before the CPU-heavy replay
       await new Promise((r) => setTimeout(r, 30));
@@ -71,10 +75,10 @@ export default function BacktestPerformance() {
   }, []);
 
   useEffect(() => {
-    if (started.current) return;
+    if (started.current || !ready) return;
     started.current = true;
     execute(DEFAULT_PARAMS, '3d', false);
-  }, [execute]);
+  }, [execute, ready]);
 
   const handleRange = (v: string) => {
     setRange(v);

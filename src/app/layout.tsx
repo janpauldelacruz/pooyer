@@ -60,8 +60,8 @@ const jsonLd = [
 ];
 
 const fontVars = {
-  '--font-ibm-plex-sans': "'IBM Plex Sans', system-ui, sans-serif",
-  '--font-ibm-plex-mono': "'IBM Plex Mono', ui-monospace, monospace",
+  '--font-ibm-plex-sans': "'Plus Jakarta Sans', system-ui, sans-serif",
+  '--font-ibm-plex-mono': "'JetBrains Mono', ui-monospace, monospace",
 } as React.CSSProperties;
 
 export default function RootLayout({
@@ -76,7 +76,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         />
         <script
           type="application/ld+json"
@@ -85,7 +85,7 @@ export default function RootLayout({
 
         <script type="module" async src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fscalpsigna7280back.builtwithrocket.new&_be=https%3A%2F%2Fappanalytics.rocket.new&_v=0.1.21" />
         <script type="module" defer src="https://static.rocket.new/rocket-shot.js?v=0.0.3" /></head>
-      <body style={{ fontFamily: "'IBM Plex Sans', system-ui, sans-serif" }}>{children}</body>
+      <body style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>{children}</body>
     </html>
   );
 }

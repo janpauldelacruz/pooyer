@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { RawKline } from './types';
+import { DataSourceId, getDataSource } from './settings';
 
-const REST = 'https://api.binance.com/api/v3/klines';
-const WS_URL = 'wss://stream.binance.com:9443/stream?streams=btcusdt@kline_1m/btcusdt@bookTicker/btcusdt@miniTicker';
+const DEFAULT_SOURCE: DataSourceId = 'binance';
+const WS_STREAMS = 'btcusdt@kline_1m/btcusdt@bookTicker/btcusdt@miniTicker';
 
 type Row = (string | number)[];
 
@@ -20,7 +21,12 @@ function parseKline(r: Row): RawKline {
 }
 
 /** Fetch up to `total` real 1m klines (paginated backwards, 1000 per request). */
-export async function fetchHistoricalKlines(total: number, signal?: AbortSignal): Promise<RawKline[]> {
+export async function fetchHistoricalKlines(
+  total: number,
+  signal?: AbortSignal,
+  source: DataSourceId = DEFAULT_SOURCE
+): Promise<RawKline[]> {
+  const REST = getDataSource(source).rest;
   let endTime: number | undefined;
   let all: RawKline[] = [];
   while (all.length < total) {
@@ -71,7 +77,7 @@ const INITIAL: LiveMarket = {
 };
 
 /** Live BTCUSD market: REST seed of real 1m candles + Binance WebSocket stream. */
-export function useLiveMarket(seedBars = 400): LiveMarket {
+export function useLiveMarket(seedBars = 400, source: DataSourceId = DEFAULT_SOURCE): LiveMarket {
   const [state, setState] = useState<LiveMarket>(INITIAL);
   const wsRef = useRef<WebSocket | null>(null);
   const retryRef = useRef(0);
@@ -99,12 +105,17 @@ export function useLiveMarket(seedBars = 400): LiveMarket {
 
   useEffect(() => {
     closedRef.current = false;
+    retryRef.current = 0;
+    lastMsgRef.current = 0;
+    setState(INITIAL);
+    const src = getDataSource(source);
+    const WS_URL = `${src.ws}?streams=${WS_STREAMS}`;
     const ctrl = new AbortController();
     let timer: ReturnType<typeof setTimeout> | null = null;
 
     // Backfill any candles missed while the socket was down, then merge by openTime.
     const backfill = () => {
-      fetchHistoricalKlines(30, ctrl.signal)
+      fetchHistoricalKlines(30, ctrl.signal, source)
         .then((rows) => {
           if (closedRef.current || !rows.length) return;
           setState((s) => {
@@ -171,7 +182,7 @@ export function useLiveMarket(seedBars = 400): LiveMarket {
       }
     }, 2000);
 
-    fetchHistoricalKlines(seedBars, ctrl.signal)
+    fetchHistoricalKlines(seedBars, ctrl.signal, source)
       .then((klines) => {
         if (closedRef.current) return;
         const last = klines[klines.length - 1];
@@ -190,7 +201,7 @@ export function useLiveMarket(seedBars = 400): LiveMarket {
       if (timer) clearTimeout(timer);
       wsRef.current?.close();
     };
-  }, [seedBars, applyKline]);
+  }, [seedBars, applyKline, source]);
 
   return state;
 }

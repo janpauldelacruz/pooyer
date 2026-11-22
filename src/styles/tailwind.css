@@ -3,30 +3,30 @@
 @tailwind utilities;
 
 :root {
-  --background: #07050f;
-  --foreground: #efeaff;
-  --primary: #2ee6ff;
-  --primary-foreground: #021a20;
-  --secondary: #1b1533;
-  --secondary-foreground: #e2dbff;
-  --accent: #ffb020;
-  --accent-foreground: #241600;
-  --muted: #110c22;
-  --muted-foreground: #a79fc4;
-  --card: #0d0919;
-  --card-foreground: #efeaff;
-  --border: #2a2145;
-  --input: #150f29;
-  --ring: #2ee6ff;
+  --background: #07080c;
+  --foreground: #ece8df;
+  --primary: #d4b36a;
+  --primary-foreground: #141005;
+  --secondary: #14161d;
+  --secondary-foreground: #d9d4c7;
+  --accent: #c9a24f;
+  --accent-foreground: #171204;
+  --muted: #0d0f15;
+  --muted-foreground: #8d8f9a;
+  --card: #0b0d13;
+  --card-foreground: #ece8df;
+  --border: #1f222c;
+  --input: #10121a;
+  --ring: #d4b36a;
   --radius: 0.625rem;
-  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
-  --success: #3dff9a;
-  --success-foreground: #032a18;
-  --warning: #ffb020;
-  --warning-foreground: #241600;
-  --destructive: #ff4d8d;
-  --destructive-foreground: #2c0514;
-  --violet: #8a5cff;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --success: #4fd1a1;
+  --success-foreground: #04231a;
+  --warning: #e0b050;
+  --warning-foreground: #241900;
+  --destructive: #e5677f;
+  --destructive-foreground: #2c0710;
+  --violet: #8f86c9;
 }
 
 @layer base {
@@ -39,9 +39,14 @@
     color: var(--foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     font-size: 14px;
-    line-height: 1.45;
+    line-height: 1.5;
     min-height: 100vh;
+  }
+  h1, h2, h3 {
+    letter-spacing: -0.015em;
   }
   html {
     scroll-behavior: smooth;
@@ -71,13 +76,14 @@
 
 @layer utilities {
   .num {
-    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
   }
   .label-xs {
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted-foreground);
   }
@@ -85,18 +91,18 @@
     background-image:
       linear-gradient(var(--border) 1px, transparent 1px),
       linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 32px 32px;
+    background-size: 40px 40px;
     background-position: -1px -1px;
   }
   .glow-long {
-    box-shadow: 0 0 0 1px rgba(61, 255, 154, 0.5), 0 0 40px -6px rgba(61, 255, 154, 0.45);
+    box-shadow: 0 0 0 1px rgba(79, 209, 161, 0.35), 0 18px 50px -18px rgba(79, 209, 161, 0.35);
   }
   .glow-short {
-    box-shadow: 0 0 0 1px rgba(255, 77, 141, 0.5), 0 0 40px -6px rgba(255, 77, 141, 0.45);
+    box-shadow: 0 0 0 1px rgba(229, 103, 127, 0.35), 0 18px 50px -18px rgba(229, 103, 127, 0.35);
   }
   .blob-primary {
-    background: radial-gradient(circle at center, rgba(138, 92, 255, 0.35), transparent 70%);
-    filter: blur(40px);
+    background: radial-gradient(circle at center, rgba(212, 179, 106, 0.22), transparent 70%);
+    filter: blur(50px);
   }
   .aurora {
     position: fixed;
@@ -104,30 +110,30 @@
     z-index: 0;
     pointer-events: none;
     background:
-      radial-gradient(60rem 30rem at 85% -10%, rgba(138, 92, 255, 0.22), transparent 60%),
-      radial-gradient(45rem 28rem at 0% 0%, rgba(46, 230, 255, 0.14), transparent 60%),
-      radial-gradient(40rem 26rem at 50% 110%, rgba(255, 77, 141, 0.12), transparent 60%);
-    animation: auroraShift 18s ease-in-out infinite alternate;
+      radial-gradient(55rem 26rem at 88% -12%, rgba(212, 179, 106, 0.09), transparent 62%),
+      radial-gradient(45rem 26rem at -5% -5%, rgba(120, 130, 170, 0.08), transparent 62%),
+      radial-gradient(40rem 22rem at 50% 115%, rgba(212, 179, 106, 0.05), transparent 62%);
+    animation: auroraShift 30s ease-in-out infinite alternate;
   }
   .grain {
     position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.05;
+    opacity: 0.025;
     background-image: linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px);
-    background-size: 44px 44px;
-    mask-image: radial-gradient(ellipse at top, #000 20%, transparent 75%);
-    -webkit-mask-image: radial-gradient(ellipse at top, #000 20%, transparent 75%);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at top, #000 15%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at top, #000 15%, transparent 70%);
   }
   .text-gradient {
-    background: linear-gradient(100deg, #2ee6ff 0%, #8a5cff 45%, #ff4d8d 100%);
+    background: linear-gradient(100deg, #f1dfb0 0%, #d4b36a 50%, #a8843c 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     background-size: 200% 200%;
-    animation: gradientShift 6s ease-in-out infinite alternate;
+    animation: gradientShift 10s ease-in-out infinite alternate;
   }
   .scan-sweep {
     position: relative;
@@ -137,9 +143,9 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(100deg, transparent 30%, rgba(46, 230, 255, 0.12) 50%, transparent 70%);
+    background: linear-gradient(100deg, transparent 35%, rgba(212, 179, 106, 0.07) 50%, transparent 65%);
     transform: translateX(-100%);
-    animation: sweep 3.6s ease-in-out infinite;
+    animation: sweep 6s ease-in-out infinite;
     pointer-events: none;
   }
   .border-gradient {
@@ -151,7 +157,7 @@
     inset: 0;
     padding: 1px;
     border-radius: inherit;
-    background: linear-gradient(135deg, rgba(46, 230, 255, 0.55), rgba(138, 92, 255, 0.35), rgba(255, 77, 141, 0.5));
+    background: linear-gradient(135deg, rgba(212, 179, 106, 0.55), rgba(212, 179, 106, 0.08) 45%, rgba(212, 179, 106, 0.3));
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -181,11 +187,11 @@
 }
 
 @keyframes flashUp {
-  0% { background-color: rgba(61, 255, 154, 0.3); }
+  0% { background-color: rgba(79, 209, 161, 0.22); }
   100% { background-color: transparent; }
 }
 @keyframes flashDown {
-  0% { background-color: rgba(255, 77, 141, 0.3); }
+  0% { background-color: rgba(229, 103, 127, 0.22); }
   100% { background-color: transparent; }
 }
 @keyframes slideIn {

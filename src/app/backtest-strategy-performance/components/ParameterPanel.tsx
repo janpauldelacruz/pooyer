@@ -39,11 +39,13 @@ export default function ParameterPanel({ running, onRun }: ParameterPanelProps) 
   ) => (
     <div>
       <label htmlFor={id} className="text-sm font-medium text-foreground">{label}</label>
-      <p className="text-xs text-muted-foreground">{hint}</p>
+      <p id={`${id}-hint`} className="text-xs text-muted-foreground">{hint}</p>
       <input
         id={id}
         type="number"
         step={opts.step ?? 1}
+        aria-invalid={errors[name] ? true : undefined}
+        aria-describedby={errors[name] ? `${id}-hint ${id}-err` : `${id}-hint`}
         {...register(name, {
           valueAsNumber: true,
           required: `${label} is required`,
@@ -54,7 +56,7 @@ export default function ParameterPanel({ running, onRun }: ParameterPanelProps) 
           errors[name] ? 'border-destructive focus:ring-destructive' : 'border-border focus:border-primary focus:ring-ring'
         }`}
       />
-      {errors[name] && <p className="mt-1 text-xs text-destructive">{errors[name]?.message as string}</p>}
+      {errors[name] && <p id={`${id}-err`} role="alert" className="mt-1 text-xs text-destructive">{errors[name]?.message as string}</p>}
     </div>
   );
 
@@ -95,7 +97,7 @@ export default function ParameterPanel({ running, onRun }: ParameterPanelProps) 
             disabled={running}
             className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition-all duration-150 hover:opacity-90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {running ? <Loader2 size={16} className="animate-spin" /> : <Play size={16} />}
+            {running ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
             {running ? 'Running' : 'Run Backtest'}
           </button>
           <button
@@ -104,11 +106,11 @@ export default function ParameterPanel({ running, onRun }: ParameterPanelProps) 
             disabled={!isDirty || running}
             className="flex h-10 items-center justify-center gap-2 rounded-lg border border-border bg-secondary px-3 text-sm font-semibold text-secondary-foreground transition-all duration-150 hover:bg-muted active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <RotateCcw size={15} /> Reset
+            <RotateCcw size={15} aria-hidden="true" /> Reset
           </button>
         </div>
         {isDirty && !running && (
-          <p className="slide-in text-xs text-warning">Unsaved parameter changes — run the backtest to apply them.</p>
+          <p role="status" className="slide-in text-xs text-warning">Unsaved parameter changes — run the backtest to apply them.</p>
         )}
       </form>
     </Card>
