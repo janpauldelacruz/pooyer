@@ -4,7 +4,7 @@ import SettingsPanel from './SettingsPanel';
 
 export const metadata: Metadata = {
   title: 'Settings',
-  description: 'Configure alert volume, risk warnings, candlestick theme and live data source for the ScalpSignal terminal.',
+  description: 'Configure alert volume, risk warnings, candlestick theme and live data source for the pooyer terminal.',
   robots: { index: false, follow: false },
 };
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ ScalpSignal
+# ⚡ pooyer
 
 **Real-time BTC/USD 1-minute scalping signals, computed live in your browser.**
 
@@ -19,7 +19,7 @@ Four rule-based signal modules · closed-candle (non-repainting) logic · live B
 
 > ## ⚠️ Risk Disclaimer
 >
-> ScalpSignal is an **educational and research tool**. It is **not financial advice**, and signals are **not guaranteed to be profitable**.
+> pooyer is an **educational and research tool**. It is **not financial advice**, and signals are **not guaranteed to be profitable**.
 > Trading leveraged instruments such as BTC/USD carries a high risk of loss. Backtest results are simulated, use
 > simplified cost assumptions, and **do not predict future performance**. The signal engine has not been validated by
 > live trading. Always paper-trade first, and never risk money you cannot afford to lose.
@@ -59,7 +59,7 @@ Four rule-based signal modules · closed-candle (non-repainting) logic · live B
 
 ## 🔭 Overview
 
-ScalpSignal connects directly to Binance's public market data for **BTCUSDT (1-minute candles)**, computes technical
+pooyer connects directly to Binance's public market data for **BTCUSDT (1-minute candles)**, computes technical
 indicators in the browser, and evaluates four independent signal modules on every **closed** candle. When a module
 produces a signal that meets your minimum confidence, the dashboard shows an entry, stop-loss and two take-profit
 levels, a countdown for how long the signal stays valid, and fires an optional sound and on-screen alert.
@@ -117,8 +117,8 @@ WebSocket APIs, and all computation runs in your browser. No API keys are requir
 
 ```bash
 # 1. Clone
-git clone https://github.com/janpauldelacruz/scalpsignal.git
-cd scalpsignal
+git clone https://github.com/janpauldelacruz/pooyer.git
+cd pooyer
 
 # 2. Install dependencies
 npm install
@@ -189,7 +189,7 @@ Computed in `src/lib/indicators.ts` from the 1-minute candles:
 ### 3. Closed-Candle Rule (No Repainting)
 
 A common failure of signal tools is **repainting**: a signal appears mid-candle, then vanishes when the candle closes
-differently. ScalpSignal avoids this by design:
+differently. pooyer avoids this by design:
 
 - Only candles whose 1-minute window has **fully elapsed** (`openTime + 60s <= now`) are passed to the signal engine.
 - The still-forming candle is drawn on the **chart** as the last point so the display feels live, but it is never used
@@ -363,7 +363,7 @@ distance and subtracted from the result.
 
 ## ⚙️ Configuration
 
-ScalpSignal needs **no environment variables** to run; Binance public endpoints require no key.
+pooyer needs **no environment variables** to run; Binance public endpoints require no key.
 
 The repository's `.env` may contain placeholder keys from the project template (Supabase, OpenAI, Stripe, etc.).
 **None of them are used by the signal engine.** Leave them as placeholders and never commit real secrets.
@@ -383,7 +383,7 @@ To change the instrument or timeframe, edit the constants in `src/lib/useLiveMar
 ## 📁 Project Structure
 
 ```
-scalpsignal/
+pooyer/
 ├── public/
 │   ├── assets/images/            # Logo and fallback images
 │   ├── robots.txt
@@ -441,7 +441,7 @@ scalpsignal/
 
 ## ☁️ Deployment
 
-ScalpSignal is a standard Next.js app with no server-side secrets, so it deploys to any Next.js-capable host
+pooyer is a standard Next.js app with no server-side secrets, so it deploys to any Next.js-capable host
 (Vercel, Netlify via `@netlify/plugin-nextjs`, a Node server, or a container).
 
 ```bash

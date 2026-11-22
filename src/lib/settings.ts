@@ -86,8 +86,8 @@ export function getDataSource(id: DataSourceId): DataSource {
   return DATA_SOURCES.find((s) => s.id === id) ?? DATA_SOURCES[0];
 }
 
-const KEY = 'scalpsignal.settings.v1';
-const EVENT = 'scalpsignal:settings';
+const KEY = 'pooyer.settings.v1';
+const EVENT = 'pooyer:settings';
 
 function sanitize(raw: unknown): TerminalSettings {
   const r = (raw && typeof raw === 'object' ? raw : {}) as Partial<TerminalSettings>;
