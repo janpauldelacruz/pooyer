@@ -33,8 +33,9 @@ export default function LiveTickStrip({ market, analysis }: LiveTickStripProps) 
     lastPrice.current = price;
   }, [price]);
 
+  const feedName = market.activeSource === 'icmarkets' ? 'IC Markets SC' : market.usingBackup ? 'Binance backup' : 'Binance';
   const statusText =
-    status === 'live' ? 'Live stream'
+    status === 'live' ? `Live · ${feedName}`
       : status === 'error' ? 'Feed offline'
       : status === 'stale' ? 'Feed stale — signals paused'
       : status === 'reconnecting' ? 'Reconnecting…' : 'Connecting…';

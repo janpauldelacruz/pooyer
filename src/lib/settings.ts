@@ -3,7 +3,14 @@
 import { useCallback, useEffect, useState } from 'react';
 
 export type CandleThemeId = 'classic' | 'neon' | 'mono' | 'colorblind' | 'amber';
-export type DataSourceId = 'binance' | 'binance-vision' | 'binance-us';
+export type DataSourceId = 'icmarkets' | 'binance' | 'binance-vision' | 'binance-us';
+
+/** IC Markets SC feed: pushed from the MT5 LiveSignalsFeed EA into Supabase (public, read-only). */
+export const ICM_FEED = {
+  url: 'https://thzzaefvvktwnlkljxlh.supabase.co',
+  key: 'sb_publishable_HPd8EwAwAZElWHSFpdClJw_uhPZKDFD',
+  symbol: 'BTCUSD',
+};
 
 export interface TerminalSettings {
   alertVolume: number;
@@ -22,7 +29,7 @@ export const DEFAULT_SETTINGS: TerminalSettings = {
   driftWarning: true,
   lowConfidenceWarning: true,
   candleTheme: 'neon',
-  dataSource: 'binance',
+  dataSource: 'icmarkets',
 };
 
 export interface CandleTheme {
@@ -52,6 +59,14 @@ export interface DataSource {
 }
 
 export const DATA_SOURCES: DataSource[] = [
+  {
+    id: 'icmarkets',
+    label: 'IC Markets SC',
+    description: 'BTCUSD from the MT5 feed · default, auto-falls back to Binance if offline',
+    rest: 'https://thzzaefvvktwnlkljxlh.supabase.co',
+    ws: '',
+    host: 'IC Markets SC BTCUSD',
+  },
   {
     id: 'binance',
     label: 'Binance Global',
