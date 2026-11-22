@@ -7,7 +7,7 @@ interface ConfidenceRingProps {
   tone: 'long' | 'short';
 }
 
-export default function ConfidenceRing({ value, size = 112, stroke = 9, tone }: ConfidenceRingProps) {
+export default function ConfidenceRing({ value, size = 92, stroke = 8, tone }: ConfidenceRingProps) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const offset = c - (value / 100) * c;
@@ -27,11 +27,12 @@ export default function ConfidenceRing({ value, size = 112, stroke = 9, tone }: 
           strokeDasharray={c}
           strokeDashoffset={offset}
           className="transition-all duration-500"
+          style={{ filter: `drop-shadow(0 0 6px ${color})` }}
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="num text-3xl font-bold leading-none text-foreground">{value}</span>
-        <span className="label-xs mt-1">Confidence</span>
+        <span className="num text-2xl font-bold leading-none text-foreground">{value}</span>
+        <span className="label-xs mt-0.5 text-[10px]">Confidence</span>
       </div>
     </div>
   );

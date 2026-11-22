@@ -13,16 +13,16 @@ export default function BacktestKpiGrid({ loading, result }: BacktestKpiGridProp
 
   if (loading) {
     return (
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 2xl:grid-cols-8">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-4 2xl:grid-cols-8">
         {Array.from({ length: 8 }, (_, i) => (
-          <div key={`kpi-skel-${i + 1}`} className="h-[104px] animate-pulse rounded-xl border border-border bg-muted" />
+          <div key={`kpi-skel-${i + 1}`} className="h-[74px] animate-pulse rounded-lg border border-border bg-muted" />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-4 2xl:grid-cols-8">
+    <div className="grid grid-cols-2 gap-2 md:grid-cols-4 2xl:grid-cols-8">
       <MetricTile
         label="Win rate"
         value={`${k.winRate}%`}

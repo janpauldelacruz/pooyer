@@ -7,7 +7,7 @@ import type { LiveAnalysis } from '@/lib/liveAnalysis';
 
 const PriceChartClient = dynamic(() => import('./PriceChartClient'), {
   ssr: false,
-  loading: () => <div className="h-[370px] w-full animate-pulse rounded-lg bg-muted" />,
+  loading: () => <div className="h-[310px] w-full animate-pulse rounded-lg bg-muted" />,
 });
 
 const TOGGLES = [
@@ -24,7 +24,7 @@ export default function PriceChartPanel({ analysis }: { analysis: LiveAnalysis |
   return (
     <Card
       title="BTCUSD · 1m price action"
-      subtitle="Last 60 live candles · signal markers ▲ long ▼ short · active levels overlaid"
+      subtitle="Last 60 live candles · ▲ long ▼ short markers · active levels overlaid"
       action={
         <div className="flex flex-wrap items-center justify-end gap-1.5">
           {TOGGLES.map((t) => {
@@ -35,33 +35,33 @@ export default function PriceChartPanel({ analysis }: { analysis: LiveAnalysis |
                 type="button"
                 onClick={() => setOn((o) => ({ ...o, [t.key]: !o[t.key] }))}
                 aria-pressed={active}
-                className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-medium transition-all duration-150 active:scale-95 ${
+                className={`flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-[11px] font-medium transition-all duration-150 active:scale-95 ${
                   active
-                    ? 'border-primary/40 bg-primary/10 text-foreground'
+                    ? 'border-primary/50 bg-primary/10 text-foreground'
                     : 'border-border bg-secondary text-muted-foreground hover:text-foreground'
                 }`}
               >
-                <span className={`h-2 w-2 rounded-full ${t.swatch}`} />
+                <span className={`h-2 w-2 rounded-full ${t.swatch}`} aria-hidden="true" />
                 {t.label}
               </button>
             );
           })}
         </div>
       }
-      bodyClassName="p-3"
+      bodyClassName="p-2.5"
     >
       {data.length === 0 ? (
-        <div className="flex h-[370px] items-center justify-center rounded-lg bg-muted text-sm text-muted-foreground">
+        <div className="flex h-[310px] items-center justify-center rounded-lg bg-muted text-sm text-muted-foreground">
           Waiting for live BTCUSD candles…
         </div>
       ) : (
         <PriceChartClient data={data} showBands={on.bands} showEma={on.ema} showVwap={on.vwap} active={analysis?.active ?? null} />
       )}
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-2 text-[11px] text-muted-foreground">
-        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-success" /> EMA 9</span>
-        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-accent" /> EMA 21</span>
-        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-destructive" /> EMA 50</span>
-        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-foreground" /> VWAP</span>
+      <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-1.5 text-[11px] text-muted-foreground">
+        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-success" aria-hidden="true" /> EMA 9</span>
+        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-accent" aria-hidden="true" /> EMA 21</span>
+        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-destructive" aria-hidden="true" /> EMA 50</span>
+        <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-foreground" aria-hidden="true" /> VWAP</span>
         {last && (
           <span className="num ml-auto">
             RSI {last.rsi.toFixed(1)} · MACD hist {last.macdHist >= 0 ? '+' : ''}{last.macdHist.toFixed(2)}

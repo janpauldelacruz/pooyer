@@ -33,37 +33,44 @@ export default function LiveTickStrip({ market, analysis }: LiveTickStripProps) 
     lastPrice.current = price;
   }, [price]);
 
+  const statusText =
+    status === 'live' ? 'Live stream'
+      : status === 'error' ? 'Feed offline'
+      : status === 'stale' ? 'Feed stale — signals paused'
+      : status === 'reconnecting' ? 'Reconnecting…' : 'Connecting…';
+
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+    <div className="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-6">
       <div
-        className={`col-span-2 rounded-xl border border-border bg-card p-3.5 transition-all duration-150 md:col-span-1 xl:col-span-2 ${
+        className={`border-gradient col-span-2 rounded-lg bg-card px-3 py-2 transition-all duration-150 md:col-span-3 xl:col-span-2 ${
           flash === 'up' ? 'flash-up' : flash === 'down' ? 'flash-down' : ''
         }`}
       >
         <div className="flex items-center justify-between">
           <p className="label-xs">BTCUSD · Last</p>
           <span
+            role="status"
             className={`flex items-center gap-1.5 text-[11px] font-medium ${status === 'live' ? 'text-success' : status === 'error' ? 'text-destructive' : 'text-warning'}`}
           >
-            <span className={`live-dot h-1.5 w-1.5 rounded-full ${status === 'live' ? 'bg-success' : status === 'error' ? 'bg-destructive' : 'bg-warning'}`} />
-            {status === 'live' ? 'Live stream' : status === 'error' ? 'Feed offline' : status === 'stale' ? 'Feed stale — signals paused' : status === 'reconnecting' ? 'Reconnecting…' : 'Connecting…'}
+            <span className={`live-dot h-1.5 w-1.5 rounded-full ${status === 'live' ? 'bg-success' : status === 'error' ? 'bg-destructive' : 'bg-warning'}`} aria-hidden="true" />
+            {statusText}
           </span>
         </div>
-        <div className="mt-1.5 flex items-end gap-3">
-          <p className={`num text-3xl font-bold leading-none md:text-4xl ${up ? 'text-success' : 'text-destructive'}`}>
+        <div className="mt-1 flex flex-wrap items-end gap-x-3">
+          <p className={`num text-3xl font-black leading-none ${up ? 'text-success' : 'text-destructive'}`}>
             {price !== null ? fmtPrice(price) : '—'}
           </p>
           {change !== null && changePct !== null && (
-            <span className={`num mb-0.5 flex items-center gap-0.5 text-sm font-semibold ${change >= 0 ? 'text-success' : 'text-destructive'}`}>
-              {change >= 0 ? <ArrowUpRight size={15} /> : <ArrowDownRight size={15} />}
+            <span className={`num mb-0.5 flex items-center gap-0.5 text-xs font-semibold ${change >= 0 ? 'text-success' : 'text-destructive'}`}>
+              {change >= 0 ? <ArrowUpRight size={14} aria-hidden="true" /> : <ArrowDownRight size={14} aria-hidden="true" />}
               {change >= 0 ? '+' : ''}
               {change.toFixed(2)} ({changePct.toFixed(2)}%)
             </span>
           )}
         </div>
-        <p className="mt-1.5 text-xs text-muted-foreground">
+        <p className="mt-1 truncate text-[11px] text-muted-foreground">
           {high24h !== null && low24h !== null && open24h !== null
-            ? `24h range ${fmtPrice(low24h)} – ${fmtPrice(high24h)} · 24h open ${fmtPrice(open24h)}`
+            ? `24h ${fmtPrice(low24h)} – ${fmtPrice(high24h)} · open ${fmtPrice(open24h)}`
             : 'Waiting for 24h stats from the live stream…'}
         </p>
       </div>
@@ -71,29 +78,29 @@ export default function LiveTickStrip({ market, analysis }: LiveTickStripProps) 
       <MetricTile
         label="ATR(14) · 1m"
         value={analysis?.atr ? analysis.atr.toFixed(1) : '—'}
-        sub="Live volatility · stops sized from ATR"
-        icon={<Activity size={15} />}
+        sub="Live volatility"
+        icon={<Activity size={13} />}
       />
       <MetricTile
         label="Spread"
         value={spread !== null ? spread.toFixed(2) : '—'}
-        sub={spread === null ? 'Waiting for order book' : spreadWide ? 'Widening — consider waiting' : 'Tight — good execution'}
+        sub={spread === null ? 'Waiting for order book' : spreadWide ? 'Widening — wait' : 'Tight — good fills'}
         tone={spreadWide ? 'warn' : 'default'}
-        icon={<Gauge size={15} />}
+        icon={<Gauge size={13} />}
       />
       <MetricTile
         label="Session P/L"
         value={s ? `${s.netR >= 0 ? '+' : ''}${s.netR.toFixed(1)}R` : '—'}
-        sub={s ? `${s.wins}W · ${s.losses}L · ${s.expired} expired` : 'Calculating from live signals'}
+        sub={s ? `${s.wins}W · ${s.losses}L · ${s.expired} exp` : 'Calculating…'}
         tone={s ? (s.netR > 0 ? 'good' : s.netR < 0 ? 'bad' : 'default') : 'default'}
-        icon={<Layers size={15} />}
+        icon={<Layers size={13} />}
       />
       <MetricTile
         label="Loss Circuit"
         value={s ? `${s.consecutiveLosses}/${s.maxConsecutiveLossAllowed}` : '—'}
-        sub={`Consecutive losses · limit ${s ? s.dailyLossLimitR.toFixed(1) : '-4.0'}R daily`}
+        sub={`Limit ${s ? s.dailyLossLimitR.toFixed(1) : '-4.0'}R daily`}
         tone={s && s.consecutiveLosses >= 2 ? 'bad' : 'default'}
-        icon={<AlertTriangle size={15} />}
+        icon={<AlertTriangle size={13} />}
       />
     </div>
   );

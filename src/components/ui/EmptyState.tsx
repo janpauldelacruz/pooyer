@@ -10,8 +10,8 @@ interface EmptyStateProps {
 
 export default function EmptyState({ icon, title, description, actionLabel, onAction }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 px-6 py-14 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-secondary text-muted-foreground">
+    <div className="flex flex-col items-center justify-center gap-2 px-6 py-8 text-center">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-secondary text-muted-foreground" aria-hidden="true">
         {icon}
       </div>
       <div>

@@ -3,11 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Activity, BarChart3, ChevronsLeft, ChevronsRight, Bell, Settings, LifeBuoy, X } from 'lucide-react';
+import { Activity, BarChart3, ChevronsLeft, ChevronsRight, X } from 'lucide-react';
 import AppLogo from '@/components/ui/AppLogo';
 import Tooltip from '@/components/ui/Tooltip';
-import Icon from '@/components/ui/AppIcon';
-
 
 interface SidebarProps {
   collapsed: boolean;
@@ -18,14 +16,8 @@ interface SidebarProps {
 }
 
 const PRIMARY_NAV = [
-  { id: 'nav-live', href: '/', label: 'Live Signals', icon: Activity, badge: null },
-  { id: 'nav-backtest', href: '/backtest-strategy-performance', label: 'Backtest & Performance', icon: BarChart3, badge: null },
-];
-
-const SECONDARY_NAV = [
-  { id: 'nav-alerts', label: 'Alert Rules', icon: Bell, badge: null },
-  { id: 'nav-settings', label: 'Preferences', icon: Settings, badge: null },
-  { id: 'nav-help', label: 'Strategy Docs', icon: LifeBuoy, badge: null },
+  { id: 'nav-live', href: '/', label: 'Live Signals', icon: Activity },
+  { id: 'nav-backtest', href: '/backtest-strategy-performance', label: 'Backtest & Performance', icon: BarChart3 },
 ];
 
 const STATUS_LABEL = {
@@ -48,12 +40,12 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
     const showLabels = isMobile || !collapsed;
     return (
       <div className="flex h-full flex-col">
-        <div className={`flex h-16 items-center border-b border-border px-4 ${showLabels ? 'justify-between' : 'justify-center'}`}>
-          <div className="flex items-center gap-2.5">
-            <AppLogo size={32} />
+        <div className={`flex h-12 items-center border-b border-border px-3 ${showLabels ? 'justify-between' : 'justify-center'}`}>
+          <div className="flex items-center gap-2">
+            <AppLogo size={26} />
             {showLabels && (
-              <span className="text-[15px] font-bold tracking-tight text-foreground">
-                Scalp<span className="text-primary">Signal</span>
+              <span className="text-[15px] font-extrabold tracking-tight text-foreground">
+                Scalp<span className="text-gradient">Signal</span>
               </span>
             )}
           </div>
@@ -64,16 +56,16 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
               aria-label="Close navigation"
               className="rounded-md p-1.5 text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground active:scale-95"
             >
-              <X size={18} />
+              <X size={16} />
             </button>
           )}
         </div>
 
         {showLabels && (
-          <div className="mx-3 mt-3 rounded-lg border border-border bg-muted px-3 py-2.5">
+          <div className="border-gradient mx-2.5 mt-2.5 rounded-lg bg-muted px-2.5 py-2">
             <p className="label-xs">Instrument</p>
-            <div className="mt-1 flex items-center justify-between">
-              <span className="num text-sm font-semibold text-foreground">BTCUSD · 1m</span>
+            <div className="mt-0.5 flex items-center justify-between">
+              <span className="num text-[13px] font-semibold text-foreground">BTCUSD · 1m</span>
               <span
                 className={`flex items-center gap-1.5 text-[11px] font-medium ${
                   status === 'live' ? 'text-success' : status === 'error' ? 'text-destructive' : 'text-warning'
@@ -83,6 +75,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
                   className={`live-dot h-1.5 w-1.5 rounded-full ${
                     status === 'live' ? 'bg-success' : status === 'error' ? 'bg-destructive' : 'bg-warning'
                   }`}
+                  aria-hidden="true"
                 />
                 {STATUS_LABEL[status]}
               </span>
@@ -90,75 +83,37 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
           </div>
         )}
 
-        <nav className="mt-4 flex-1 space-y-6 overflow-y-auto px-3">
-          <div>
-            {showLabels && <p className="label-xs mb-2 px-2">Terminal</p>}
-            <ul className="space-y-1">
-              {PRIMARY_NAV.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.href);
-                const link = (
-                  <Link
-                    href={item.href}
-                    onClick={onCloseMobile}
-                    className={`group flex items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium transition-all duration-150 ${
-                      active
-                        ? 'bg-primary/10 text-primary' :'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                    } ${showLabels ? '' : 'justify-center'}`}
-                  >
-                    <Icon size={18} className="shrink-0" />
-                    {showLabels && <span className="flex-1 truncate">{item.label}</span>}
-                    {showLabels && item.badge && (
-                      <span className="num rounded-md bg-primary px-1.5 py-0.5 text-[10px] font-bold text-primary-foreground">
-                        {item.badge}
-                      </span>
-                    )}
-                  </Link>
-                );
-                return (
-                  <li key={item.id}>
-                    {showLabels ? link : <Tooltip text={item.label}>{link}</Tooltip>}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          <div>
-            {showLabels && <p className="label-xs mb-2 px-2">Workspace</p>}
-            <ul className="space-y-1">
-              {SECONDARY_NAV.map((item) => {
-                const Icon = item.icon;
-                const btn = (
-                  <button
-                    type="button"
-                    className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-sm font-medium text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground ${
-                      showLabels ? '' : 'justify-center'
-                    }`}
-                  >
-                    <Icon size={18} className="shrink-0" />
-                    {showLabels && <span className="flex-1 truncate text-left">{item.label}</span>}
-                    {showLabels && item.badge && (
-                      <span className="num rounded-md bg-secondary px-1.5 py-0.5 text-[10px] font-bold text-secondary-foreground">
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-                return (
-                  <li key={item.id}>
-                    {showLabels ? btn : <Tooltip text={item.label}>{btn}</Tooltip>}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+        <nav aria-label="Primary" className="mt-3 flex-1 overflow-y-auto px-2.5">
+          {showLabels && <p className="label-xs mb-1.5 px-2">Terminal</p>}
+          <ul className="space-y-0.5">
+            {PRIMARY_NAV.map((item) => {
+              const NavIcon = item.icon;
+              const active = isActive(item.href);
+              const link = (
+                <Link
+                  href={item.href}
+                  onClick={onCloseMobile}
+                  aria-current={active ? 'page' : undefined}
+                  aria-label={showLabels ? undefined : item.label}
+                  className={`group flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-all duration-150 ${
+                    active
+                      ? 'bg-primary/15 text-primary shadow-[inset_2px_0_0_var(--primary)]'
+                      : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                  } ${showLabels ? '' : 'justify-center'}`}
+                >
+                  <NavIcon size={16} className="shrink-0" aria-hidden="true" />
+                  {showLabels && <span className="flex-1 truncate">{item.label}</span>}
+                </Link>
+              );
+              return <li key={item.id}>{showLabels ? link : <Tooltip text={item.label}>{link}</Tooltip>}</li>;
+            })}
+          </ul>
         </nav>
 
-        <div className="border-t border-border p-3">
+        <div className="border-t border-border p-2.5">
           {showLabels ? (
-            <div className="rounded-lg bg-muted p-2.5">
-              <p className="text-sm font-semibold text-foreground">Data source</p>
+            <div className="rounded-lg bg-muted p-2">
+              <p className="text-xs font-semibold text-foreground">Data source</p>
               <p className="truncate text-[11px] text-muted-foreground">Binance BTCUSDT · live 1m stream</p>
             </div>
           ) : null}
@@ -167,9 +122,9 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
               type="button"
               onClick={onToggle}
               aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-              className="mt-2 hidden w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground active:scale-95 lg:flex"
+              className="mt-1.5 hidden w-full items-center justify-center gap-2 rounded-lg py-1.5 text-xs font-medium text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground active:scale-95 lg:flex"
             >
-              {collapsed ? <ChevronsRight size={16} /> : (<><ChevronsLeft size={16} /> Collapse</>)}
+              {collapsed ? <ChevronsRight size={15} /> : (<><ChevronsLeft size={15} /> Collapse</>)}
             </button>
           )}
         </div>
@@ -180,8 +135,8 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
   return (
     <>
       <aside
-        className={`fixed inset-y-0 left-0 z-40 hidden border-r border-border bg-card transition-all duration-300 ease-in-out lg:block ${
-          collapsed ? 'w-16' : 'w-60'
+        className={`fixed inset-y-0 left-0 z-40 hidden border-r border-border bg-card/90 backdrop-blur transition-all duration-300 ease-in-out lg:block ${
+          collapsed ? 'w-14' : 'w-52'
         }`}
       >
         {content(false)}
@@ -193,9 +148,11 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
             mobileOpen ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={onCloseMobile}
+          aria-hidden="true"
         />
         <aside
-          className={`absolute inset-y-0 left-0 w-64 border-r border-border bg-card transition-transform duration-300 ease-in-out ${
+          aria-hidden={!mobileOpen}
+          className={`absolute inset-y-0 left-0 w-60 border-r border-border bg-card transition-transform duration-300 ease-in-out ${
             mobileOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >

@@ -76,7 +76,7 @@ export default function PriceChartClient({ data, showBands, showEma, showVwap, a
 
   return (
     <div className="w-full">
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={250}>
         <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="priceFill" x1="0" y1="0" x2="0" y2="1">
@@ -130,7 +130,7 @@ export default function PriceChartClient({ data, showBands, showEma, showVwap, a
         </ComposedChart>
       </ResponsiveContainer>
 
-      <ResponsiveContainer width="100%" height={70}>
+      <ResponsiveContainer width="100%" height={48}>
         <ComposedChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
           <XAxis dataKey="time" hide />
           <YAxis orientation="right" hide />
