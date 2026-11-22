@@ -162,14 +162,14 @@ export default function LiveSignalDashboard() {
     <AppLayout title="Live Signal Dashboard" soundOn={settings.sound} price={market.price} status={market.status}>
       <div className="space-y-4">
         {market.status === 'error' && (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <div role="alert" className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
             Live BTCUSD market data is unavailable: {market.error}. No data is shown until the live feed connects.
           </div>
         )}
 
         <LiveTickStrip market={market} analysis={analysis} />
 
-        <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+        <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
           <div className="xl:col-span-5">
             <HeroSignalCard
               analysis={analysis}
@@ -184,7 +184,7 @@ export default function LiveSignalDashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-12">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 2xl:grid-cols-12">
           <div className="2xl:col-span-4">
             <ConfluenceChecklist analysis={analysis} />
           </div>

@@ -37,10 +37,12 @@ function stamp(ms: number) {
 
 export default function BacktestHeader({ range, onRange, moduleFilter, onModule, running, result }: BacktestHeaderProps) {
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4 lg:flex-row lg:items-center lg:justify-between">
+    <div className="border-gradient flex flex-col gap-2 rounded-xl bg-card px-3 py-2.5 lg:flex-row lg:items-center lg:justify-between">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-lg font-semibold tracking-tight text-foreground">Combined strategy · BTCUSD 1m</h2>
+          <h2 className="text-base font-bold tracking-tight text-foreground">
+            Combined strategy · <span className="text-gradient">BTCUSD 1m</span>
+          </h2>
           {running ? (
             <Badge tone="warn" dot>Running</Badge>
           ) : result ? (
@@ -49,7 +51,7 @@ export default function BacktestHeader({ range, onRange, moduleFilter, onModule,
             <Badge tone="neutral">No results</Badge>
           )}
         </div>
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="mt-0.5 text-[11px] text-muted-foreground">
           {result ? (
             <>
               <span className="num">{result.kpis.totalTrades}</span> trades on <span className="num">{result.bars.toLocaleString('en-US')}</span> real Binance 1m candles ·{' '}
@@ -62,8 +64,8 @@ export default function BacktestHeader({ range, onRange, moduleFilter, onModule,
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-1 rounded-lg border border-border bg-muted p-1" role="group" aria-label="Date range">
-          <CalendarRange size={14} className="ml-1.5 text-muted-foreground" />
+        <div className="flex items-center gap-1 rounded-lg border border-border bg-muted p-0.5" role="group" aria-label="Date range">
+          <CalendarRange size={13} className="ml-1.5 text-muted-foreground" aria-hidden="true" />
           {RANGES.map((r) => (
             <button
               key={r.id}
@@ -82,12 +84,12 @@ export default function BacktestHeader({ range, onRange, moduleFilter, onModule,
 
         <div className="relative">
           <label htmlFor="module-filter" className="sr-only">Module filter</label>
-          <Layers size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Layers size={13} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <select
             id="module-filter"
             value={moduleFilter}
             onChange={(e) => onModule(e.target.value)}
-            className="appearance-none rounded-lg border border-border bg-input py-2 pl-9 pr-8 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+            className="appearance-none rounded-lg border border-border bg-input py-1.5 pl-8 pr-7 text-xs text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
           >
             {MODULES.map((m) => (
               <option key={m.id} value={m.value}>{m.label}</option>
@@ -95,8 +97,8 @@ export default function BacktestHeader({ range, onRange, moduleFilter, onModule,
           </select>
         </div>
 
-        <span className="hidden items-center gap-1.5 rounded-lg border border-border bg-muted px-2.5 py-2 text-xs text-muted-foreground sm:flex">
-          {running ? <Loader2 size={13} className="animate-spin" /> : <FlaskConical size={13} />}
+        <span className="hidden items-center gap-1.5 rounded-lg border border-border bg-muted px-2.5 py-1.5 text-[11px] text-muted-foreground sm:flex">
+          {running ? <Loader2 size={12} className="animate-spin" aria-hidden="true" /> : <FlaskConical size={12} aria-hidden="true" />}
           {running ? 'Replaying candles…' : 'No look-ahead replay'}
         </span>
       </div>

@@ -14,8 +14,8 @@ export default function Toggle({ checked, onChange, label, description, id }: To
   return (
     <div className="flex items-center justify-between gap-3">
       <label htmlFor={id} className="min-w-0 cursor-pointer">
-        <p className="text-sm font-medium text-foreground">{label}</p>
-        {description && <p className="text-xs text-muted-foreground">{description}</p>}
+        <p className="text-[13px] font-medium text-foreground">{label}</p>
+        {description && <p className="text-[11px] text-muted-foreground">{description}</p>}
       </label>
       <button
         id={id}
@@ -23,15 +23,15 @@ export default function Toggle({ checked, onChange, label, description, id }: To
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`relative h-6 w-11 shrink-0 rounded-full border transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+        className={`relative h-5 w-9 shrink-0 rounded-full border transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
           checked ? 'border-primary/50 bg-primary' : 'border-border bg-secondary'
         }`}
       >
         <span
-          className={`absolute top-0.5 h-4.5 w-4.5 rounded-full bg-foreground transition-all duration-200 ${
-            checked ? 'left-[22px]' : 'left-0.5'
+          className={`absolute top-0.5 rounded-full bg-foreground transition-all duration-200 ${
+            checked ? 'left-[18px]' : 'left-0.5'
           }`}
-          style={{ height: 18, width: 18 }}
+          style={{ height: 14, width: 14 }}
         />
       </button>
     </div>

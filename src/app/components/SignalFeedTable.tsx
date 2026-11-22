@@ -67,8 +67,31 @@ export default function SignalFeedTable({ analysis }: { analysis: LiveAnalysis |
 
   const allSelected = rows.length > 0 && rows.every((r) => selected.includes(r.id));
 
+  const exportCsv = () => {
+    const chosen = rows.filter((r) => selected.includes(r.id));
+    const header = ['id', 'time_utc', 'side', 'module', 'entry', 'stop', 'target', 'rr', 'confidence', 'outcome', 'r_result'];
+    const lines = chosen.map((r) =>
+      [r.id, r.time, r.side, MODULE_SHORT[r.module], r.entry, r.sl, r.tp, r.rr.toFixed(2), r.confidence, r.outcome, r.rResult ?? '']
+        .map((v) => `"${String(v).replace(/"/g, '""')}"`)
+        .join(',')
+    );
+    const blob = new Blob([[header.join(','), ...lines].join('\n')], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'btcusd-signals.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`${chosen.length} signals exported`);
+    setSelected([]);
+  };
+
   const SortHead = ({ k, label, className = '' }: { k: SortKey; label: string; className?: string }) => (
-    <th scope="col" className={`px-3 py-2.5 text-left ${className}`}>
+    <th
+      scope="col"
+      aria-sort={sortKey === k ? (dir === 'asc' ? 'ascending' : 'descending') : 'none'}
+      className={`px-3 py-1.5 text-left ${className}`}
+    >
       <button
         type="button"
         onClick={() => toggleSort(k)}
@@ -99,17 +122,17 @@ export default function SignalFeedTable({ analysis }: { analysis: LiveAnalysis |
       }
       bodyClassName="p-0"
     >
-      <div className="flex flex-col gap-3 border-b border-border p-3 md:flex-row md:items-center md:justify-between">
-        <div className="relative w-full md:w-72">
+      <div className="flex flex-col gap-2 border-b border-border p-2.5 md:flex-row md:items-center md:justify-between">
+        <div className="relative w-full md:w-64">
           <label htmlFor="feed-search" className="sr-only">Filter signals</label>
-          <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Search size={13} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <input
             id="feed-search"
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Filter by module, outcome, ID"
-            className="w-full rounded-lg border border-border bg-input py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+            className="w-full rounded-md border border-border bg-input py-1.5 pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
         <div className="flex items-center gap-1.5">
@@ -118,7 +141,8 @@ export default function SignalFeedTable({ analysis }: { analysis: LiveAnalysis |
               key={`filter-${f}`}
               type="button"
               onClick={() => setSide(f)}
-              className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-all duration-150 active:scale-95 ${
+              aria-pressed={side === f}
+              className={`rounded-md border px-2.5 py-1 text-xs font-semibold transition-all duration-150 active:scale-95 ${
                 side === f
                   ? 'border-primary/40 bg-primary/10 text-primary' :'border-border bg-secondary text-muted-foreground hover:text-foreground'
               }`}
@@ -135,10 +159,7 @@ export default function SignalFeedTable({ analysis }: { analysis: LiveAnalysis |
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => {
-                toast.success(`${selected.length} signals exported`);
-                setSelected([]);
-              }}
+              onClick={exportCsv}
               className="rounded-md bg-primary px-2.5 py-1 font-semibold text-primary-foreground transition-all duration-150 hover:opacity-90 active:scale-95"
             >
               Export CSV
@@ -155,7 +176,8 @@ export default function SignalFeedTable({ analysis }: { analysis: LiveAnalysis |
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[980px] text-sm">
+        <table className="w-full min-w-[900px] text-[13px]">
+          <caption className="sr-only">Live BTCUSD signals with entry, stop, target and outcome</caption>
           <thead className="border-b border-border bg-muted/50">
             <tr>
               <th scope="col" className="w-10 px-3 py-2.5">

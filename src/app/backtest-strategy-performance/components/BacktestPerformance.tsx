@@ -87,7 +87,7 @@ export default function BacktestPerformance() {
 
   return (
     <AppLayout title="Backtest & Strategy Performance">
-      <div className="space-y-4">
+      <div className="space-y-3">
         <BacktestHeader
           range={range}
           onRange={handleRange}
@@ -98,12 +98,12 @@ export default function BacktestPerformance() {
         />
 
         {error && !running && (
-          <div className="rounded-lg border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-warning">{error}</div>
+          <div role="alert" className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-warning">{error}</div>
         )}
 
         {!result && running && (
-          <div className="flex items-center justify-center gap-2 rounded-xl border border-border bg-card py-16 text-sm text-muted-foreground">
-            <Loader2 size={16} className="animate-spin" /> Loading live BTCUSD history and replaying the strategy…
+          <div role="status" className="flex items-center justify-center gap-2 rounded-xl border border-border bg-card py-12 text-sm text-muted-foreground">
+            <Loader2 size={16} className="animate-spin" aria-hidden="true" /> Loading live BTCUSD history and replaying the strategy…
           </div>
         )}
 
@@ -111,7 +111,7 @@ export default function BacktestPerformance() {
           <>
             <BacktestKpiGrid loading={running} result={result} />
 
-            <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+            <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
               <div className="xl:col-span-8">
                 <EquityPanel loading={running} result={result} />
               </div>
@@ -120,7 +120,7 @@ export default function BacktestPerformance() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 2xl:grid-cols-3">
               <HourlyWinRatePanel loading={running} result={result} />
               <RDistributionPanel loading={running} result={result} />
               <div className="lg:col-span-2 2xl:col-span-1">
@@ -128,16 +128,16 @@ export default function BacktestPerformance() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+            <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
               <div className="xl:col-span-7">
                 <MonthlyReturnsGrid result={result} />
               </div>
-              <div className="space-y-4 xl:col-span-5">
+              <div className="space-y-3 xl:col-span-5">
                 <StreakStatsPanel result={result} />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+            <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
               <div className="xl:col-span-8">
                 <BacktestTradesTable moduleFilter={moduleFilter} trades={result.trades} />
               </div>
@@ -149,7 +149,7 @@ export default function BacktestPerformance() {
         )}
 
         {!result && !running && (
-          <div className="grid grid-cols-1 gap-4 xl:grid-cols-12">
+          <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
             <div className="xl:col-span-8" />
             <div className="xl:col-span-4">
               <ParameterPanel running={running} onRun={handleRun} />

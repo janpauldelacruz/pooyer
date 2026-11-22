@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { TrendingUp, TrendingDown, Timer, Copy, Bell, Crosshair, ShieldAlert, Target, Calculator, Hourglass } from 'lucide-react';
+import { TrendingUp, TrendingDown, Timer, Copy, Bell, Crosshair, ShieldAlert, Target, Calculator, Hourglass, Radar } from 'lucide-react';
 import { toast } from 'sonner';
 import Badge from '@/components/ui/Badge';
 import ConfidenceRing from './ConfidenceRing';
@@ -24,34 +24,39 @@ export default function HeroSignalCard({ analysis, price, now, loading, onReplay
   if (!s) {
     const ev = analysis?.evaluation;
     return (
-      <div className="relative overflow-hidden rounded-xl border border-border bg-card">
-        <div className="relative p-4 md:p-5">
+      <section aria-label="Signal status" className="border-gradient scan-sweep relative h-full overflow-hidden rounded-xl bg-card">
+        <div className="blob-primary pointer-events-none absolute -right-16 -top-16 h-48 w-48" aria-hidden="true" />
+        <div className="relative p-3">
           <div className="flex flex-wrap items-center gap-2">
             <Badge tone="info" dot>{loading ? 'CONNECTING' : 'SCANNING'}</Badge>
-            <span className="text-xs text-muted-foreground">Live BTCUSD 1m · 4 strategy modules</span>
+            <span className="text-[11px] text-muted-foreground">Live BTCUSD 1m · 4 strategy modules</span>
           </div>
-          <div className="mt-6 flex flex-col items-center gap-3 py-6 text-center">
-            <Hourglass size={30} className="text-muted-foreground" />
-            <p className="text-xl font-bold text-foreground">{loading ? 'Loading live market data…' : 'No active signal'}</p>
-            <p className="max-w-sm text-sm text-muted-foreground">
+          <div className="mt-3 flex flex-col items-center gap-2 py-4 text-center">
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-primary signal-pulse">
+              {loading ? <Hourglass size={24} aria-hidden="true" /> : <Radar size={24} aria-hidden="true" />}
+            </div>
+            <p className="text-lg font-extrabold text-foreground">
+              {loading ? 'Loading live market data…' : <>Hunting the next <span className="text-gradient">high-probability</span> setup</>}
+            </p>
+            <p className="max-w-sm text-xs text-muted-foreground">
               {loading
                 ? 'Waiting for real BTCUSD candles from the live feed.'
-                : 'The engine is evaluating every live 1m candle. A BUY or SELL appears here only when a high-probability setup is confirmed.'}
+                : 'Every closed 1m candle is scored. A BUY or SELL lands here only when the confluence is confirmed.'}
             </p>
             {ev && (
               <p className="num text-xs text-muted-foreground">
-                Current bias: <span className="font-semibold text-foreground">{ev.bias ?? 'Neutral'}</span> · {ev.biasChecks}/{ev.checks.length} checks aligned
+                Bias: <span className="font-semibold text-foreground">{ev.bias ?? 'Neutral'}</span> · {ev.biasChecks}/{ev.checks.length} checks aligned
               </p>
             )}
           </div>
           {analysis?.sampleWinRate !== null && analysis?.sampleWinRate !== undefined && (
-            <p className="mt-2 text-center text-xs text-muted-foreground">
+            <p className="text-center text-[11px] text-muted-foreground">
               Recent live sample: <span className="num font-semibold text-foreground">{analysis.sampleWinRate}%</span> win rate over{' '}
               <span className="num font-semibold text-foreground">{analysis.sampleSize}</span> resolved signals
             </p>
           )}
         </div>
-      </div>
+      </section>
     );
   }
 
@@ -78,50 +83,53 @@ export default function HeroSignalCard({ analysis, price, now, loading, onReplay
   };
 
   return (
-    <div className={`relative overflow-hidden rounded-xl border border-border bg-card ${glow}`}>
-      <div className="blob-primary pointer-events-none absolute -right-20 -top-20 h-56 w-56" />
-      <div className="relative p-4 md:p-5">
+    <section aria-label="Active signal" className={`relative h-full overflow-hidden rounded-xl border border-border bg-card ${glow}`}>
+      <div className="blob-primary pointer-events-none absolute -right-16 -top-16 h-48 w-48" aria-hidden="true" />
+      <div className="relative p-3.5">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
             <Badge tone={long ? 'long' : 'short'} dot>ACTIVE SIGNAL</Badge>
             <Badge tone="info">{MODULE_LABELS[s.module]}</Badge>
           </div>
-          <span className={`num flex items-center gap-1.5 text-xs font-semibold ${stale ? 'text-warning' : 'text-muted-foreground'}`}>
-            <Timer size={14} />
+          <span className={`num flex items-center gap-1 text-xs font-semibold ${stale ? 'text-warning' : 'text-muted-foreground'}`}>
+            <Timer size={13} aria-hidden="true" />
             Valid for {remaining}s
           </span>
         </div>
 
-        <div className="mt-4 flex items-center gap-4 md:gap-6">
-          <ConfidenceRing value={s.confidence} tone={long ? 'long' : 'short'} />
+        <div className="mt-2.5 flex items-center gap-3">
+          <ConfidenceRing value={s.confidence} tone={long ? 'long' : 'short'} size={92} stroke={8} />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              {long ? <TrendingUp size={26} className={tone} /> : <TrendingDown size={26} className={tone} />}
-              <p className={`text-3xl font-bold tracking-tight md:text-4xl ${tone}`}>{long ? 'BUY' : 'SELL'}</p>
+              {long ? <TrendingUp size={24} className={tone} aria-hidden="true" /> : <TrendingDown size={24} className={tone} aria-hidden="true" />}
+              <p className={`signal-pulse text-4xl font-black tracking-tight ${tone}`}>{long ? 'BUY' : 'SELL'}</p>
               <span className="label-xs">{long ? 'Long' : 'Short'} BTCUSD</span>
             </div>
-            <p className="mt-1.5 text-sm text-muted-foreground">
+            <p className="mt-1 text-xs text-muted-foreground">
               <span className="num font-semibold text-foreground">{s.confluence}/{s.confluenceTotal}</span> checks aligned · fired{' '}
               <span className="num">{age}s</span> ago
             </p>
-            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
               {analysis?.sampleWinRate !== null && analysis?.sampleWinRate !== undefined ? (
                 <>
-                  <span>
-                    Live sample win rate <span className="num font-semibold text-foreground">{analysis.sampleWinRate}%</span>
-                  </span>
-                  <span>
-                    Sample <span className="num font-semibold text-foreground">{analysis.sampleSize}</span>
-                  </span>
+                  Live sample win rate <span className="num font-semibold text-foreground">{analysis.sampleWinRate}%</span> · n=
+                  <span className="num font-semibold text-foreground">{analysis.sampleSize}</span>
                 </>
               ) : (
-                <span>Not enough resolved signals for a win rate yet</span>
+                'Not enough resolved signals for a win rate yet'
               )}
-            </div>
+            </p>
           </div>
         </div>
 
-        <div className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+        <div
+          className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-secondary"
+          role="progressbar"
+          aria-label="Signal validity remaining"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(pct)}
+        >
           <div
             className={`h-full rounded-full transition-all duration-1000 ease-linear ${stale ? 'bg-warning' : 'bg-primary'}`}
             style={{ width: `${pct}%` }}
@@ -129,80 +137,80 @@ export default function HeroSignalCard({ analysis, price, now, loading, onReplay
         </div>
 
         {driftTooFar && (
-          <div className="slide-in mt-3 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-warning">
-            <ShieldAlert size={14} className="mt-0.5 shrink-0" />
+          <div role="status" className="slide-in mt-2 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 px-2.5 py-1.5 text-xs text-warning">
+            <ShieldAlert size={13} className="mt-0.5 shrink-0" aria-hidden="true" />
             Price has drifted {Math.abs(drift).toFixed(1)} from entry. Chasing reduces R:R — wait for a retest.
           </div>
         )}
 
-        <div className="mt-4 grid grid-cols-2 gap-2.5 md:grid-cols-4">
-          <div className="rounded-lg border border-primary/30 bg-primary/10 p-3">
-            <p className="label-xs flex items-center gap-1.5"><Crosshair size={12} /> Entry</p>
-            <p className="num mt-1 text-lg font-bold text-foreground">{fmtPrice(s.entry)}</p>
-            <p className="num text-[11px] text-muted-foreground">Candle close price</p>
+        <div className="mt-2.5 grid grid-cols-2 gap-2 md:grid-cols-4">
+          <div className="rounded-lg border border-primary/35 bg-primary/10 px-2.5 py-2">
+            <p className="label-xs flex items-center gap-1"><Crosshair size={11} aria-hidden="true" /> Entry</p>
+            <p className="num mt-0.5 text-base font-bold text-foreground">{fmtPrice(s.entry)}</p>
+            <p className="num text-[10.5px] text-muted-foreground">Candle close</p>
           </div>
-          <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3">
-            <p className="label-xs flex items-center gap-1.5"><ShieldAlert size={12} /> Stop loss</p>
-            <p className="num mt-1 text-lg font-bold text-destructive">{fmtPrice(s.sl)}</p>
-            <p className="num text-[11px] text-muted-foreground">{long ? '−' : '+'}{riskDist.toFixed(1)} · 1.0× ATR</p>
+          <div className="rounded-lg border border-destructive/35 bg-destructive/10 px-2.5 py-2">
+            <p className="label-xs flex items-center gap-1"><ShieldAlert size={11} aria-hidden="true" /> Stop loss</p>
+            <p className="num mt-0.5 text-base font-bold text-destructive">{fmtPrice(s.sl)}</p>
+            <p className="num text-[10.5px] text-muted-foreground">{long ? '−' : '+'}{riskDist.toFixed(1)} · 1.0× ATR</p>
           </div>
-          <div className="rounded-lg border border-success/30 bg-success/10 p-3">
-            <p className="label-xs flex items-center gap-1.5"><Target size={12} /> Take profit 1</p>
-            <p className="num mt-1 text-lg font-bold text-success">{fmtPrice(s.tp1)}</p>
-            <p className="num text-[11px] text-muted-foreground">R:R 1:{rr1.toFixed(1)} · close 50%</p>
+          <div className="rounded-lg border border-success/35 bg-success/10 px-2.5 py-2">
+            <p className="label-xs flex items-center gap-1"><Target size={11} aria-hidden="true" /> Take profit 1</p>
+            <p className="num mt-0.5 text-base font-bold text-success">{fmtPrice(s.tp1)}</p>
+            <p className="num text-[10.5px] text-muted-foreground">R:R 1:{rr1.toFixed(1)} · 50%</p>
           </div>
-          <div className="rounded-lg border border-success/30 bg-success/10 p-3">
-            <p className="label-xs flex items-center gap-1.5"><Target size={12} /> Take profit 2</p>
-            <p className="num mt-1 text-lg font-bold text-success">{fmtPrice(s.tp2)}</p>
-            <p className="num text-[11px] text-muted-foreground">R:R 1:{rr2.toFixed(1)} · runner</p>
+          <div className="rounded-lg border border-success/35 bg-success/10 px-2.5 py-2">
+            <p className="label-xs flex items-center gap-1"><Target size={11} aria-hidden="true" /> Take profit 2</p>
+            <p className="num mt-0.5 text-base font-bold text-success">{fmtPrice(s.tp2)}</p>
+            <p className="num text-[10.5px] text-muted-foreground">R:R 1:{rr2.toFixed(1)} · runner</p>
           </div>
         </div>
 
-        <div className="mt-3 flex items-center justify-between rounded-lg border border-border bg-muted px-3 py-2 text-xs">
+        <div className="mt-2 flex items-center justify-between rounded-lg border border-border bg-muted px-2.5 py-1.5 text-[11px]">
           <span className="text-muted-foreground">Invalidated if a 1m candle closes {long ? 'below' : 'above'}</span>
           <span className="num font-semibold text-warning">{fmtPrice(s.invalidationLevel)}</span>
         </div>
 
-        <div className="mt-4 rounded-lg border border-border bg-muted p-3">
+        <div className="mt-2 rounded-lg border border-border bg-muted px-2.5 py-2">
           <div className="flex items-center justify-between gap-3">
-            <label htmlFor="risk-input" className="label-xs flex items-center gap-1.5">
-              <Calculator size={12} /> Position size calculator
+            <label htmlFor="risk-input" className="label-xs flex items-center gap-1">
+              <Calculator size={11} aria-hidden="true" /> Position size
             </label>
             <div className="flex items-center gap-1.5">
-              <span className="text-xs text-muted-foreground">Risk $</span>
+              <span className="text-[11px] text-muted-foreground">Risk $</span>
               <input
                 id="risk-input"
                 type="number"
                 min={1}
                 value={risk}
                 onChange={(e) => setRisk(Math.max(0, Number(e.target.value)))}
-                className="num w-20 rounded-md border border-border bg-input px-2 py-1 text-right text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
+                className="num w-20 rounded-md border border-border bg-input px-2 py-0.5 text-right text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
               />
             </div>
           </div>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="text-xs text-muted-foreground">Size for {fmtPrice(riskDist, 1)} stop distance</span>
-            <span className="num text-base font-bold text-foreground">{size.toFixed(4)} BTC</span>
+          <div className="mt-1 flex items-baseline justify-between">
+            <span className="text-[11px] text-muted-foreground">For {fmtPrice(riskDist, 1)} stop distance</span>
+            <span className="num text-sm font-bold text-foreground">{size.toFixed(4)} BTC</span>
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-2.5 flex flex-wrap gap-2">
           <button
             type="button"
             onClick={copyLevels}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-all duration-150 hover:opacity-90 active:scale-95"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-[13px] font-bold text-primary-foreground shadow-[0_0_24px_-6px_var(--primary)] transition-all duration-150 hover:brightness-110 active:scale-95"
           >
-            <Copy size={15} /> Copy Order Levels
+            <Copy size={14} aria-hidden="true" /> Copy Order Levels
           </button>
           <button
             type="button"
             onClick={() => onReplayAlert(s.side)}
-            className="flex items-center justify-center gap-2 rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm font-semibold text-secondary-foreground transition-all duration-150 hover:bg-muted active:scale-95"
+            className="flex items-center justify-center gap-1.5 rounded-lg border border-border bg-secondary px-3 py-2 text-[13px] font-semibold text-secondary-foreground transition-all duration-150 hover:bg-muted active:scale-95"
           >
-            <Bell size={15} /> Replay Alert
+            <Bell size={14} aria-hidden="true" /> Replay Alert
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
