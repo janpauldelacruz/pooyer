@@ -58,7 +58,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
             <AppLogo size={26} />
             {showLabels && (
               <span className="text-[15px] font-extrabold tracking-tight text-foreground">
-                Scalp<span className="text-gradient">Signal</span>
+                Scalp<span className="text-gradient font-semibold">Signal</span>
               </span>
             )}
           </div>
@@ -75,7 +75,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
         </div>
 
         {showLabels && (
-          <div className="border-gradient mx-2.5 mt-2.5 rounded-lg bg-muted px-2.5 py-2">
+          <div className="border-gradient mx-2.5 mt-3 rounded-lg bg-muted/80 px-3 py-2.5">
             <p className="label-xs">Instrument</p>
             <div className="mt-0.5 flex items-center justify-between">
               <span className="num text-[13px] font-semibold text-foreground">BTCUSD · 1m</span>
@@ -110,7 +110,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
                   aria-label={showLabels ? undefined : item.label}
                   className={`group flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-all duration-150 ${
                     active
-                      ? 'bg-primary/15 text-primary shadow-[inset_2px_0_0_var(--primary)]'
+                      ? 'bg-primary/10 text-primary shadow-[inset_2px_0_0_var(--primary)]'
                       : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
                   } ${showLabels ? '' : 'justify-center'}`}
                 >
@@ -150,7 +150,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
     <>
       <aside
         aria-label="Sidebar"
-        className={`fixed inset-y-0 left-0 z-40 hidden border-r border-border bg-card/90 backdrop-blur transition-all duration-300 ease-in-out lg:block ${
+        className={`fixed inset-y-0 left-0 z-40 hidden border-r border-border bg-card/80 backdrop-blur-xl transition-all duration-300 ease-in-out lg:block ${
           collapsed ? 'w-14' : 'w-52'
         }`}
       >

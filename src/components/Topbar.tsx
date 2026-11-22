@@ -26,7 +26,7 @@ export default function Topbar({ onOpenMobile, title, soundOn = true, price = nu
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 flex h-12 items-center gap-2.5 border-b border-border bg-background/80 px-3 backdrop-blur-md md:px-4">
+    <header className="sticky top-0 z-30 flex h-12 items-center gap-2.5 border-b border-border bg-background/70 px-3 backdrop-blur-xl md:px-4">
       <button
         type="button"
         onClick={onOpenMobile}

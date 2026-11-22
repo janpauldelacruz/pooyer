@@ -27,7 +27,7 @@ const TONE_VAL: Record<NonNullable<MetricTileProps['tone']>, string> = {
 export default function MetricTile({ label, value, sub, tone = 'default', icon, className = '', flash = null }: MetricTileProps) {
   const flashCls = flash === 'up' ? 'flash-up' : flash === 'down' ? 'flash-down' : '';
   return (
-    <div className={`rounded-lg border px-3 py-2 transition-all duration-150 hover:border-primary/40 ${TONE_BG[tone]} ${flashCls} ${className}`}>
+    <div className={`rounded-lg border px-3.5 py-2.5 shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset] transition-all duration-200 hover:border-primary/35 ${TONE_BG[tone]} ${flashCls} ${className}`}>
       <div className="flex items-center justify-between gap-2">
         <p className="label-xs truncate">{label}</p>
         {icon && <span className="text-muted-foreground" aria-hidden="true">{icon}</span>}
