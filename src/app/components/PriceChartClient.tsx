@@ -113,7 +113,10 @@ export default function PriceChartClient({ data, showBands, showEma, showVwap, a
   const theme = getCandleTheme(candleTheme);
   const chartData = data.map((d) => ({ ...d, range: [d.low, d.high] as [number, number] }));
   const levels = active ? [active.entry, active.sl, active.tp1, active.tp2] : [];
-  const prices = [...data.flatMap((d) => [d.low, d.high, d.bbLower, d.bbUpper]), ...levels];
+  const prices = [
+    ...data.flatMap((d) => [d.low, d.high, ...(showBands ? [d.bbLower, d.bbUpper] : [])]),
+    ...levels,
+  ].filter((v) => Number.isFinite(v));
   const min = Math.floor(Math.min(...prices) - 20);
   const max = Math.ceil(Math.max(...prices) + 20);
 
@@ -137,6 +140,7 @@ export default function PriceChartClient({ data, showBands, showEma, showVwap, a
           <XAxis dataKey="time" tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }} tickLine={false} axisLine={false} interval={9} />
           <YAxis
             domain={[min, max]}
+            allowDataOverflow
             orientation="right"
             tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
             tickLine={false}
@@ -145,13 +149,6 @@ export default function PriceChartClient({ data, showBands, showEma, showVwap, a
             tickFormatter={(v: number) => fmtPrice(v, 0)}
           />
           <Tooltip content={<ChartTip />} cursor={{ stroke: 'var(--muted-foreground)', strokeDasharray: '3 3' }} />
-
-          {showBands && (
-            <>
-              <Line type="monotone" dataKey="bbUpper" stroke="var(--muted-foreground)" strokeWidth={1} strokeDasharray="4 3" dot={false} isAnimationActive={false} />
-              <Line type="monotone" dataKey="bbLower" stroke="var(--muted-foreground)" strokeWidth={1} strokeDasharray="4 3" dot={false} isAnimationActive={false} />
-            </>
-          )}
 
           <Area type="monotone" dataKey="close" stroke="none" fill="url(#priceFill)" isAnimationActive={false} />
           <Bar
@@ -162,15 +159,25 @@ export default function PriceChartClient({ data, showBands, showEma, showVwap, a
             )}
           />
 
-          {showEma && (
-            <>
-              <Line type="monotone" dataKey="ema9" stroke="var(--success)" strokeWidth={1.4} dot={false} isAnimationActive={false} />
-              <Line type="monotone" dataKey="ema21" stroke="var(--accent)" strokeWidth={1.4} dot={false} isAnimationActive={false} />
-              <Line type="monotone" dataKey="ema50" stroke="var(--destructive)" strokeWidth={1.4} dot={false} isAnimationActive={false} />
-            </>
+          {showBands && (
+            <Line key="bb-upper" type="monotone" dataKey="bbUpper" stroke="#a78bfa" strokeWidth={1.4} strokeDasharray="4 3" dot={false} connectNulls isAnimationActive={false} />
           )}
+          {showBands && (
+            <Line key="bb-lower" type="monotone" dataKey="bbLower" stroke="#a78bfa" strokeWidth={1.4} strokeDasharray="4 3" dot={false} connectNulls isAnimationActive={false} />
+          )}
+
+          {showEma && (
+            <Line key="ema-9" type="monotone" dataKey="ema9" stroke="#22c55e" strokeWidth={1.6} dot={false} connectNulls isAnimationActive={false} />
+          )}
+          {showEma && (
+            <Line key="ema-21" type="monotone" dataKey="ema21" stroke="#38bdf8" strokeWidth={1.6} dot={false} connectNulls isAnimationActive={false} />
+          )}
+          {showEma && (
+            <Line key="ema-50" type="monotone" dataKey="ema50" stroke="#f97316" strokeWidth={1.6} dot={false} connectNulls isAnimationActive={false} />
+          )}
+
           {showVwap && (
-            <Line type="monotone" dataKey="vwap" stroke="var(--foreground)" strokeWidth={1.2} strokeDasharray="2 3" dot={false} isAnimationActive={false} />
+            <Line key="vwap-line" type="monotone" dataKey="vwap" stroke="var(--foreground)" strokeWidth={1.4} strokeDasharray="2 3" dot={false} connectNulls isAnimationActive={false} />
           )}
 
           <Scatter dataKey="mark" shape={<SignalMark />} isAnimationActive={false} />

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Search, ArrowUp, ArrowDown, Radio, Eye, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 import Card from '@/components/ui/Card';
@@ -30,6 +30,12 @@ export default function SignalFeedTable({ analysis }: { analysis: LiveAnalysis |
   const [sortKey, setSortKey] = useState<SortKey>('time');
   const [dir, setDir] = useState<'asc' | 'desc'>('desc');
   const [selected, setSelected] = useState<string[]>([]);
+
+  useEffect(() => {
+    const onSearch = (e: Event) => setQuery(String((e as CustomEvent<string>).detail ?? ''));
+    window.addEventListener('pooyer:search', onSearch);
+    return () => window.removeEventListener('pooyer:search', onSearch);
+  }, []);
 
   const feed: SignalRow[] = useMemo(() => [...(analysis?.signals ?? [])].reverse().slice(0, 60), [analysis?.signals]);
 

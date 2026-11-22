@@ -51,6 +51,11 @@ export default function Topbar({ onOpenMobile, title, soundOn = true, price = nu
             id="global-search"
             type="search"
             placeholder="Search signals"
+            onChange={(e) => {
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('pooyer:search', { detail: e.target.value }));
+              }
+            }}
             className="w-full rounded-md border border-border bg-input py-1.5 pl-8 pr-2 text-xs text-foreground placeholder:text-muted-foreground transition-all duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>

@@ -17,7 +17,7 @@ interface SidebarProps {
 }
 
 const PRIMARY_NAV = [
-  { id: 'nav-live', href: '/', label: 'Live Signals', icon: Activity },
+  { id: 'nav-live', href: '/', label: "pooyer\'s dashboard", icon: Activity },
   { id: 'nav-backtest', href: '/backtest-strategy-performance', label: 'Backtest & Performance', icon: BarChart3 },
   { id: 'nav-settings', href: '/settings', label: 'Settings', icon: Settings },
 ];
