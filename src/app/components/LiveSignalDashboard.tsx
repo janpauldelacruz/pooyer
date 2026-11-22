@@ -174,7 +174,7 @@ export default function LiveSignalDashboard() {
   );
 
   return (
-    <AppLayout title="Live Signal Dashboard" soundOn={settings.sound} price={market.price} status={market.status}>
+    <AppLayout title="pooyer's dashboard" soundOn={settings.sound} price={market.price} status={market.status}>
       <div className="space-y-4">
         {market.status === 'error' && (
           <div role="alert" className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">

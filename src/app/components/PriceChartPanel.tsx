@@ -12,9 +12,9 @@ const PriceChartClient = dynamic(() => import('./PriceChartClient'), {
 });
 
 const TOGGLES = [
-  { id: 'tg-ema', key: 'ema', label: 'EMA 9/21/50', swatch: 'bg-success' },
+  { id: 'tg-ema', key: 'ema', label: 'EMA 9/21/50', swatch: 'bg-[#22c55e]' },
   { id: 'tg-vwap', key: 'vwap', label: 'VWAP', swatch: 'bg-foreground' },
-  { id: 'tg-bb', key: 'bands', label: 'Bollinger 20,2', swatch: 'bg-muted-foreground' },
+  { id: 'tg-bb', key: 'bands', label: 'Bollinger 20,2', swatch: 'bg-[#a78bfa]' },
 ] as const;
 
 export default function PriceChartPanel({ analysis, candleTheme = 'neon' }: { analysis: LiveAnalysis | null; candleTheme?: CandleThemeId }) {

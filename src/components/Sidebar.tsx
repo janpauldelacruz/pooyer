@@ -17,7 +17,7 @@ interface SidebarProps {
 }
 
 const PRIMARY_NAV = [
-  { id: 'nav-live', href: '/', label: 'Live Signals', icon: Activity },
+  { id: 'nav-live', href: '/', label: "pooyer\'s dashboard", icon: Activity },
   { id: 'nav-backtest', href: '/backtest-strategy-performance', label: 'Backtest & Performance', icon: BarChart3 },
   { id: 'nav-settings', href: '/settings', label: 'Settings', icon: Settings },
 ];
@@ -57,8 +57,8 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
           <div className="flex items-center gap-2">
             <AppLogo size={26} />
             {showLabels && (
-              <span className="text-[15px] font-extrabold tracking-tight text-foreground">
-                Scalp<span className="text-gradient font-semibold">Signal</span>
+              <span className="text-[15px] font-extrabold tracking-tight text-gradient">
+                pooyer
               </span>
             )}
           </div>

@@ -33,7 +33,7 @@ const AppLogo = memo(function AppLogo({
       {src ? (
         <AppImage
           src={src}
-          alt="ScalpSignal logo"
+          alt="pooyer logo"
           width={size}
           height={size}
           className="flex-shrink-0"

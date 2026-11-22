@@ -13,25 +13,25 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://scalpsigna7280.bui
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'ScalpSignal — Live BTCUSD 1-Minute Scalping Signals',
-    template: '%s | ScalpSignal',
+    default: 'pooyer — Live BTCUSD 1-Minute Scalping Signals',
+    template: '%s | pooyer',
   },
   description:
     'Live BTCUSD 1-minute BUY/SELL scalping signals scored by EMA, RSI, MACD, VWAP and Bollinger confluence — with exact entry, stop-loss and take-profit levels from real market data.',
   keywords: ['BTCUSD scalping signals', '1 minute bitcoin signals', 'crypto scalping', 'BTC buy sell signals', 'confluence trading'],
-  applicationName: 'ScalpSignal',
+  applicationName: 'pooyer',
   alternates: { canonical: SITE_URL },
   openGraph: {
     type: 'website',
-    siteName: 'ScalpSignal',
-    title: 'ScalpSignal — Live BTCUSD 1-Minute Scalping Signals',
+    siteName: 'pooyer',
+    title: 'pooyer — Live BTCUSD 1-Minute Scalping Signals',
     description:
       'Real-time BUY/SELL signals for BTCUSD 1m scalping with scored confluence, exact entry, stop and targets.',
     url: SITE_URL,
   },
   twitter: {
     card: 'summary',
-    title: 'ScalpSignal — Live BTCUSD 1-Minute Scalping Signals',
+    title: 'pooyer — Live BTCUSD 1-Minute Scalping Signals',
     description: 'Real-time BUY/SELL signals for BTCUSD 1m scalping with exact entry, stop and targets.',
   },
   robots: { index: true, follow: true },
@@ -44,18 +44,18 @@ const jsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'ScalpSignal',
+    name: 'pooyer',
     url: SITE_URL,
     logo: `${SITE_URL}/assets/images/app_logo.png`,
   },
   {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    name: 'ScalpSignal — Live BTCUSD 1-Minute Scalping Signals',
+    name: 'pooyer — Live BTCUSD 1-Minute Scalping Signals',
     url: SITE_URL,
     description:
       'Live BTCUSD 1-minute scalping signals with confluence scoring, entry, stop-loss and take-profit levels.',
-    isPartOf: { '@type': 'WebSite', name: 'ScalpSignal', url: SITE_URL },
+    isPartOf: { '@type': 'WebSite', name: 'pooyer', url: SITE_URL },
   },
 ];
 
