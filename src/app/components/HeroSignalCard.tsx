@@ -15,9 +15,11 @@ interface HeroSignalCardProps {
   now: number;
   loading: boolean;
   onReplayAlert: (side: 'LONG' | 'SHORT') => void;
+  showDriftWarning?: boolean;
+  showLowConfidenceWarning?: boolean;
 }
 
-export default function HeroSignalCard({ analysis, price, now, loading, onReplayAlert }: HeroSignalCardProps) {
+export default function HeroSignalCard({ analysis, price, now, loading, onReplayAlert, showDriftWarning = true, showLowConfidenceWarning = true }: HeroSignalCardProps) {
   const [risk, setRisk] = useState(100);
   const s = analysis?.active ?? null;
 
@@ -139,10 +141,17 @@ export default function HeroSignalCard({ analysis, price, now, loading, onReplay
           />
         </div>
 
-        {driftTooFar && (
+        {showDriftWarning && driftTooFar && (
           <div role="status" className="slide-in mt-2 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 px-2.5 py-1.5 text-xs text-warning">
             <ShieldAlert size={13} className="mt-0.5 shrink-0" aria-hidden="true" />
             Price has drifted {Math.abs(drift).toFixed(1)} from entry. Chasing reduces R:R — wait for a retest.
+          </div>
+        )}
+
+        {showLowConfidenceWarning && s.confidence < 70 && (
+          <div role="status" className="slide-in mt-2 flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 px-2.5 py-1.5 text-xs text-warning">
+            <ShieldAlert size={13} className="mt-0.5 shrink-0" aria-hidden="true" />
+            Low-confidence setup ({s.confidence}). Consider skipping it or trading smaller size.
           </div>
         )}
 

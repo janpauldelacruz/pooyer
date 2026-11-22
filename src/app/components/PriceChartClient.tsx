@@ -17,6 +17,7 @@ import {
 import { Candle } from '@/lib/types';
 import type { ActiveSignal } from '@/lib/liveAnalysis';
 import { fmtPrice } from '@/lib/format';
+import { CandleThemeId, getCandleTheme } from '@/lib/settings';
 
 interface PriceChartClientProps {
   data: Candle[];
@@ -24,6 +25,7 @@ interface PriceChartClientProps {
   showEma: boolean;
   showVwap: boolean;
   active: ActiveSignal | null;
+  candleTheme?: CandleThemeId;
 }
 
 interface TooltipPayloadItem {
@@ -68,7 +70,48 @@ function SignalMark({ cx, cy, payload }: MarkProps) {
   );
 }
 
-export default function PriceChartClient({ data, showBands, showEma, showVwap, active }: PriceChartClientProps) {
+interface CandleShapeProps {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+  payload?: Candle;
+  upColor: string;
+  downColor: string;
+  hollowUp: boolean;
+}
+
+/** Candle drawn from a [low, high] range bar: y/height span the wick, body is derived from open/close. */
+function CandleShape({ x, y, width, height, payload, upColor, downColor, hollowUp }: CandleShapeProps) {
+  if (x === undefined || y === undefined || width === undefined || height === undefined || !payload) return null;
+  const range = payload.high - payload.low;
+  const up = payload.close >= payload.open;
+  const color = up ? upColor : downColor;
+  const cx = x + width / 2;
+  const bodyW = Math.max(2, width * 0.7);
+  const scale = range > 0 ? height / range : 0;
+  const top = y + (payload.high - Math.max(payload.open, payload.close)) * scale;
+  const bodyH = Math.max(1.5, Math.abs(payload.close - payload.open) * scale);
+  return (
+    <g>
+      <line x1={cx} x2={cx} y1={y} y2={y + height} stroke={color} strokeWidth={1.2} />
+      <rect
+        x={cx - bodyW / 2}
+        y={top}
+        width={bodyW}
+        height={bodyH}
+        fill={up && hollowUp ? 'var(--background)' : color}
+        stroke={color}
+        strokeWidth={1}
+        rx={0.5}
+      />
+    </g>
+  );
+}
+
+export default function PriceChartClient({ data, showBands, showEma, showVwap, active, candleTheme = 'neon' }: PriceChartClientProps) {
+  const theme = getCandleTheme(candleTheme);
+  const chartData = data.map((d) => ({ ...d, range: [d.low, d.high] as [number, number] }));
   const levels = active ? [active.entry, active.sl, active.tp1, active.tp2] : [];
   const prices = [...data.flatMap((d) => [d.low, d.high, d.bbLower, d.bbUpper]), ...levels];
   const min = Math.floor(Math.min(...prices) - 20);
@@ -78,12 +121,12 @@ export default function PriceChartClient({ data, showBands, showEma, showVwap, a
     <div
       className="w-full"
       role="img"
-      aria-label={`BTCUSD 1-minute price chart with ${data.length} live candles${
+      aria-label={`BTCUSD 1-minute candlestick chart with ${data.length} live candles${
         active ? `, active ${active.side === 'LONG' ? 'buy' : 'sell'} signal at entry ${fmtPrice(active.entry)}, stop ${fmtPrice(active.sl)}, targets ${fmtPrice(active.tp1)} and ${fmtPrice(active.tp2)}` : ', no active signal'
       }. Latest close ${data.length ? fmtPrice(data[data.length - 1].close) : 'unavailable'}.`}
     >
       <ResponsiveContainer width="100%" height={250}>
-        <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+        <ComposedChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="priceFill" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.28} />
@@ -110,7 +153,14 @@ export default function PriceChartClient({ data, showBands, showEma, showVwap, a
             </>
           )}
 
-          <Area type="monotone" dataKey="close" stroke="var(--primary)" strokeWidth={2} fill="url(#priceFill)" isAnimationActive={false} />
+          <Area type="monotone" dataKey="close" stroke="none" fill="url(#priceFill)" isAnimationActive={false} />
+          <Bar
+            dataKey="range"
+            isAnimationActive={false}
+            shape={(p: unknown) => (
+              <CandleShape {...(p as CandleShapeProps)} upColor={theme.up} downColor={theme.down} hollowUp={theme.hollowUp} />
+            )}
+          />
 
           {showEma && (
             <>

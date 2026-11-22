@@ -3,9 +3,10 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Activity, BarChart3, ChevronsLeft, ChevronsRight, X } from 'lucide-react';
+import { Activity, BarChart3, ChevronsLeft, ChevronsRight, Settings, X } from 'lucide-react';
 import AppLogo from '@/components/ui/AppLogo';
 import Tooltip from '@/components/ui/Tooltip';
+import { getDataSource, useSettings } from '@/lib/settings';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -18,6 +19,7 @@ interface SidebarProps {
 const PRIMARY_NAV = [
   { id: 'nav-live', href: '/', label: 'Live Signals', icon: Activity },
   { id: 'nav-backtest', href: '/backtest-strategy-performance', label: 'Backtest & Performance', icon: BarChart3 },
+  { id: 'nav-settings', href: '/settings', label: 'Settings', icon: Settings },
 ];
 
 const STATUS_LABEL = {
@@ -30,6 +32,8 @@ const STATUS_LABEL = {
 
 export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile, status = 'connecting' }: SidebarProps) {
   const pathname = usePathname();
+  const { settings } = useSettings();
+  const dataSource = getDataSource(settings.dataSource);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -123,7 +127,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
           {showLabels ? (
             <div className="rounded-lg bg-muted p-2">
               <p className="text-xs font-semibold text-foreground">Data source</p>
-              <p className="truncate text-[11px] text-muted-foreground">Binance BTCUSDT · live 1m stream</p>
+              <p className="truncate text-[11px] text-muted-foreground">{dataSource.host} · live 1m stream</p>
             </div>
           ) : null}
           {!isMobile && (

@@ -15,6 +15,8 @@ import { useLiveMarket } from '@/lib/useLiveMarket';
 import { analyze } from '@/lib/liveAnalysis';
 import { fmtPrice } from '@/lib/format';
 import { SignalRow } from '@/lib/types';
+import { useSettings } from '@/lib/settings';
+import { ShieldAlert } from 'lucide-react';
 
 export interface AlertSettings {
   sound: boolean;
@@ -26,16 +28,28 @@ export interface AlertSettings {
 }
 
 export default function LiveSignalDashboard() {
-  const market = useLiveMarket(400);
+  const { settings: terminal, update: updateTerminal } = useSettings();
+  const market = useLiveMarket(400, terminal.dataSource);
   const [now, setNow] = useState(0);
-  const [settings, setSettings] = useState<AlertSettings>({
+  const [alertPrefs, setAlertPrefs] = useState<Omit<AlertSettings, 'volume'>>({
     sound: true,
-    volume: 60,
     toasts: true,
     minConfidence: 70,
     longs: true,
     shorts: true,
   });
+  const settings: AlertSettings = useMemo(
+    () => ({ ...alertPrefs, volume: terminal.alertVolume }),
+    [alertPrefs, terminal.alertVolume]
+  );
+  const setSettings = useCallback(
+    (next: AlertSettings) => {
+      const { volume, ...rest } = next;
+      setAlertPrefs(rest);
+      if (volume !== terminal.alertVolume) updateTerminal({ alertVolume: volume });
+    },
+    [terminal.alertVolume, updateTerminal]
+  );
   const audioRef = useRef<AudioContext | null>(null);
   const seenRef = useRef<string | null>(null);
   const primedRef = useRef(false);
@@ -177,10 +191,12 @@ export default function LiveSignalDashboard() {
               now={now}
               loading={market.status === 'connecting' || (!analysis && market.status !== 'error')}
               onReplayAlert={replayAlert}
+              showDriftWarning={terminal.riskWarnings && terminal.driftWarning}
+              showLowConfidenceWarning={terminal.riskWarnings && terminal.lowConfidenceWarning}
             />
           </div>
           <div className="xl:col-span-7">
-            <PriceChartPanel analysis={analysis} />
+            <PriceChartPanel analysis={analysis} candleTheme={terminal.candleTheme} />
           </div>
         </div>
 
@@ -197,6 +213,13 @@ export default function LiveSignalDashboard() {
         </div>
 
         <SessionStatsStrip analysis={analysis} />
+
+        {terminal.riskWarnings && terminal.riskDisclaimer && (
+          <p role="note" className="flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-[11px] text-warning">
+            <ShieldAlert size={13} className="mt-0.5 shrink-0" aria-hidden="true" />
+            Risk warning: scalping BTCUSD is high risk and signals are not financial advice. Never risk more than you can afford to lose, and always use the stop loss.
+          </p>
+        )}
 
         <SignalFeedTable analysis={analysis} />
       </div>
