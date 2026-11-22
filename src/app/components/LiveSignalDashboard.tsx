@@ -11,6 +11,7 @@ import ModuleStatusGrid from './ModuleStatusGrid';
 import AlertControlPanel from './AlertControlPanel';
 import SignalFeedTable from './SignalFeedTable';
 import SessionStatsStrip from './SessionStatsStrip';
+import TodayQuickViewTile from './TodayQuickViewTile';
 import { useLiveMarket } from '@/lib/useLiveMarket';
 import { analyze } from '@/lib/liveAnalysis';
 import { fmtPrice } from '@/lib/format';
@@ -182,6 +183,8 @@ export default function LiveSignalDashboard() {
         )}
 
         <LiveTickStrip market={market} analysis={analysis} />
+
+        <TodayQuickViewTile analysis={analysis} />
 
         <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
           <div className="xl:col-span-5">
