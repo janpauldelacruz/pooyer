@@ -84,6 +84,9 @@ export default function HeroSignalCard({ analysis, price, now, loading, onReplay
 
   return (
     <section aria-label="Active signal" className={`relative h-full overflow-hidden rounded-xl border border-border bg-card ${glow}`}>
+      <p key={s.id} className="sr-only" role="status">
+        {`Active ${long ? 'buy' : 'sell'} signal for BTCUSD. Entry ${fmtPrice(s.entry)}, stop loss ${fmtPrice(s.sl)}, take profit ${fmtPrice(s.tp1)}. Confidence ${s.confidence}.`}
+      </p>
       <div className="blob-primary pointer-events-none absolute -right-16 -top-16 h-48 w-48" aria-hidden="true" />
       <div className="relative p-3.5">
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -182,6 +185,8 @@ export default function HeroSignalCard({ analysis, price, now, loading, onReplay
                 id="risk-input"
                 type="number"
                 min={1}
+                inputMode="decimal"
+                aria-describedby="risk-result"
                 value={risk}
                 onChange={(e) => setRisk(Math.max(0, Number(e.target.value)))}
                 className="num w-20 rounded-md border border-border bg-input px-2 py-0.5 text-right text-sm text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-ring"
@@ -190,7 +195,7 @@ export default function HeroSignalCard({ analysis, price, now, loading, onReplay
           </div>
           <div className="mt-1 flex items-baseline justify-between">
             <span className="text-[11px] text-muted-foreground">For {fmtPrice(riskDist, 1)} stop distance</span>
-            <span className="num text-sm font-bold text-foreground">{size.toFixed(4)} BTC</span>
+            <span id="risk-result" className="num text-sm font-bold text-foreground">{size.toFixed(4)} BTC</span>
           </div>
         </div>
 

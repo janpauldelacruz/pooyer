@@ -100,7 +100,7 @@ export default function SignalFeedTable({ analysis }: { analysis: LiveAnalysis |
         }`}
       >
         {label}
-        {sortKey === k && (dir === 'asc' ? <ArrowUp size={11} /> : <ArrowDown size={11} />)}
+        {sortKey === k && (dir === 'asc' ? <ArrowUp size={11} aria-hidden="true" /> : <ArrowDown size={11} aria-hidden="true" />)}
       </button>
     </th>
   );
@@ -117,7 +117,7 @@ export default function SignalFeedTable({ analysis }: { analysis: LiveAnalysis |
       subtitle="Signals generated from live BTCUSD 1m candles with their resolved outcomes"
       action={
         <span className="flex items-center gap-1.5 text-[11px] font-medium text-success">
-          <Radio size={13} className="live-dot" /> Live
+          <Radio size={13} className="live-dot" aria-hidden="true" /> Live
         </span>
       }
       bodyClassName="p-0"

@@ -75,7 +75,13 @@ export default function PriceChartClient({ data, showBands, showEma, showVwap, a
   const max = Math.ceil(Math.max(...prices) + 20);
 
   return (
-    <div className="w-full">
+    <div
+      className="w-full"
+      role="img"
+      aria-label={`BTCUSD 1-minute price chart with ${data.length} live candles${
+        active ? `, active ${active.side === 'LONG' ? 'buy' : 'sell'} signal at entry ${fmtPrice(active.entry)}, stop ${fmtPrice(active.sl)}, targets ${fmtPrice(active.tp1)} and ${fmtPrice(active.tp2)}` : ', no active signal'
+      }. Latest close ${data.length ? fmtPrice(data[data.length - 1].close) : 'unavailable'}.`}
+    >
       <ResponsiveContainer width="100%" height={250}>
         <ComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <defs>

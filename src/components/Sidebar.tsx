@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Activity, BarChart3, ChevronsLeft, ChevronsRight, X } from 'lucide-react';
@@ -31,6 +31,15 @@ const STATUS_LABEL = {
 export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile, status = 'connecting' }: SidebarProps) {
   const pathname = usePathname();
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onCloseMobile();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileOpen, onCloseMobile]);
+
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/' || pathname === '/live-signal-dashboard';
     return pathname === href;
@@ -56,7 +65,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
               aria-label="Close navigation"
               className="rounded-md p-1.5 text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground active:scale-95"
             >
-              <X size={16} />
+              <X size={16} aria-hidden="true" />
             </button>
           )}
         </div>
@@ -83,7 +92,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
           </div>
         )}
 
-        <nav aria-label="Primary" className="mt-3 flex-1 overflow-y-auto px-2.5">
+        <nav aria-label={isMobile ? 'Primary mobile' : 'Primary'} className="mt-3 flex-1 overflow-y-auto px-2.5">
           {showLabels && <p className="label-xs mb-1.5 px-2">Terminal</p>}
           <ul className="space-y-0.5">
             {PRIMARY_NAV.map((item) => {
@@ -122,9 +131,10 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
               type="button"
               onClick={onToggle}
               aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              aria-expanded={!collapsed}
               className="mt-1.5 hidden w-full items-center justify-center gap-2 rounded-lg py-1.5 text-xs font-medium text-muted-foreground transition-all duration-150 hover:bg-secondary hover:text-foreground active:scale-95 lg:flex"
             >
-              {collapsed ? <ChevronsRight size={15} /> : (<><ChevronsLeft size={15} /> Collapse</>)}
+              {collapsed ? <ChevronsRight size={15} aria-hidden="true" /> : (<><ChevronsLeft size={15} aria-hidden="true" /> Collapse</>)}
             </button>
           )}
         </div>
@@ -135,6 +145,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
   return (
     <>
       <aside
+        aria-label="Sidebar"
         className={`fixed inset-y-0 left-0 z-40 hidden border-r border-border bg-card/90 backdrop-blur transition-all duration-300 ease-in-out lg:block ${
           collapsed ? 'w-14' : 'w-52'
         }`}
@@ -151,7 +162,9 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onCloseMobile
           aria-hidden="true"
         />
         <aside
+          aria-label="Mobile navigation"
           aria-hidden={!mobileOpen}
+          style={{ visibility: mobileOpen ? 'visible' : 'hidden' }}
           className={`absolute inset-y-0 left-0 w-60 border-r border-border bg-card transition-transform duration-300 ease-in-out ${
             mobileOpen ? 'translate-x-0' : '-translate-x-full'
           }`}

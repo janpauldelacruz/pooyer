@@ -58,6 +58,7 @@ export default function PriceChartPanel({ analysis }: { analysis: LiveAnalysis |
         <PriceChartClient data={data} showBands={on.bands} showEma={on.ema} showVwap={on.vwap} active={analysis?.active ?? null} />
       )}
       <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-1.5 text-[11px] text-muted-foreground">
+        <span className="sr-only">Chart legend:</span>
         <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-success" aria-hidden="true" /> EMA 9</span>
         <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-accent" aria-hidden="true" /> EMA 21</span>
         <span className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-destructive" aria-hidden="true" /> EMA 50</span>

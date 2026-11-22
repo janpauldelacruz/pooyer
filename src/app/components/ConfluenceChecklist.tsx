@@ -34,9 +34,9 @@ export default function ConfluenceChecklist({ analysis }: { analysis: LiveAnalys
                 className={`flex items-center gap-2.5 px-3 py-1.5 transition-colors duration-150 hover:bg-muted/50 ${c.pass ? '' : 'bg-warning/5'}`}
               >
                 {c.pass ? (
-                  <CheckCircle2 size={15} className="shrink-0 text-success" aria-label="Passed" />
+                  <CheckCircle2 size={15} className="shrink-0 text-success" role="img" aria-label="Passed" />
                 ) : (
-                  <XCircle size={15} className="shrink-0 text-warning" aria-label="Not met" />
+                  <XCircle size={15} className="shrink-0 text-warning" role="img" aria-label="Not met" />
                 )}
                 <div className="min-w-0 flex-1">
                   <p className={`text-[13px] font-medium leading-tight ${c.pass ? 'text-foreground' : 'text-warning'}`}>{c.label}</p>
